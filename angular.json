@@ -94,6 +94,23 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "version": 2
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "webshop-frontend:build:production",
+              "serveTarget": "webshop-frontend:serve:production"
+            },
+            "development": {
+              "buildTarget": "webshop-frontend:build:development",
+              "serveTarget": "webshop-frontend:serve:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }

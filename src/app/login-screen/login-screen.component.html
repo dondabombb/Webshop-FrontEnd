@@ -1,0 +1,28 @@
+<section class="sm:grid sm:grid-cols-2 gap-3">
+  <section>
+    <section class="login-container">
+      <section class="form-container">
+        <article class="formtop">
+          <h2 class="formtitle">Log in</h2>
+          <p>Je moet inloggen om iets te bestellen</p>
+        </article>
+        <form class="formcontent" [formGroup]="loginForm">
+          <section class="contentgroup">
+            <label for="email">Email address</label>
+            <input type="email" formControlName="email" id="email" placeholder="Email" required>
+          </section>
+          <section class="contentgroup">
+            <label for="password">Wachtwoord</label>
+            <input type="password" formControlName="password" id="password" placeholder="Wachtwoord" required>
+          </section>
+        </form>
+        <article class="formactions">
+          <app-button class="actionsubmit" [disabled]="!loginForm.valid" styles="main" (onClick)="onSubmit()">Inloggen</app-button>
+        </article>
+      </section>
+    </section>
+</section>
+  <section class="imgbox">
+    <img class="centerfit" src="https://images.pexels.com/photos/3029545/pexels-photo-3029545.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="background">
+  </section>
+</section>

@@ -1,0 +1,9 @@
+<app-header></app-header>
+<div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+  <section class="grid gap-4 grid-cols-3 md:grid-cols-5 place-items-center">
+    <app-item-list
+      *ngFor="let item of items" [item]="item" (dataToSend)="navigateToDetail($event)"></app-item-list>
+  </section>
+</div>
+
+

@@ -1,0 +1,10 @@
+<a *ngIf="path" [routerLink]="path" class="button" [ngClass]="styles">
+  <ng-container *ngTemplateOutlet="tempOutlet" ></ng-container>
+</a>
+<button *ngIf="!path" [type]="type" class="button" [attr.form]="formId" [ngClass]="styles" (click)="onClickButton()" [disabled]="disabled">
+  <ng-container *ngTemplateOutlet="tempOutlet"></ng-container>
+</button>
+<ng-template #tempOutlet>
+  <ng-content></ng-content>
+</ng-template>
+
