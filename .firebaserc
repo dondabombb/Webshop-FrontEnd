@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "webshop-9be81": {
+      "hosting": {
+        "webshop-frontend": [
+          "webshop-9be81"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "webshop-9be81"
+  }
+}

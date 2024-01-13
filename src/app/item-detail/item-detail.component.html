@@ -1,0 +1,20 @@
+<app-header></app-header>
+
+<section class="p-4 flex-grow space-y-3">
+  <section class="border rounded border-solid border-black">
+    <h4 class="p-2 font-bold">{{receivedData.name}}</h4>
+    <section class="grid grid-cols-2 justify-center">
+      <section class="pl-4">
+        <img class="rounded h-40 w-40" [src]="receivedData.imagePath" alt="tennisbal">
+      </section>
+      <section>
+        <p class="font-bold pl-1">{{receivedData.price | currency:'EUR'}} </p>
+        <hr>
+        <app-button styles="main" (onClick)="onSubmit()">Leg in winkelwagen</app-button>
+      </section>
+    </section>
+  </section>
+  <section class="p-2 border rounded border-solid border-black">
+    <p>{{receivedData.description}}</p>
+  </section>
+</section>

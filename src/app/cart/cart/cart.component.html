@@ -1,0 +1,29 @@
+<app-header></app-header>
+<button (click)="goBack()"><</button>
+<section class="overflow-hidden bg-white shadow sm:rounded-lg">
+  <section class="px-4 py-5 sm:px-6">
+    <h3 class="text-lg font-medium leading-6 text-gray-900">Winkelwagen</h3>
+    <p class="mt-1 max-w-2xl text-sm text-gray-500">A list of all your current products.</p>
+  </section>
+<section class="border-t border-gray-200">
+  <section class="bg-gray-50 px-4 py-5 grid grid-cols-7">
+    <p class="col-span-6"></p>
+    <p class="mt-1 text-sm text-left text-gray-900" id="columnprice">prijs</p>
+  </section>
+  <section class="bg-white grid grid-cols-7" *ngFor="let item of items; let i = index" [attr.data-index]="i" >
+      <section class="pl-4">
+        <img class="rounded h-40 w-40" [src]="item.imagePath" alt="tennisbal">
+      </section>
+      <section class="p-4  col-span-5">
+    <p class="mt-1 text-sm text-gray-900" id="name">{{item.name}}</p>
+      </section>
+      <section class="p-4">
+        <p class="mt-1 text-sm text-gray-900" id="price">{{item.price | currency:'EUR'}}</p>
+      </section>
+    <button>hi</button>
+      </section>
+    </section>
+  <section>
+    price
+  </section>
+</section>

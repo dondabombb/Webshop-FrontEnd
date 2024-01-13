@@ -1,0 +1,8 @@
+<button (click)="navigateToDetail()">
+  <section class="border border-solid border-black rounded-md p-3">
+    <img class="rounded mx-auto h-36 w-36 object-contain" [src]="item.imagePath" alt="tennisbal">
+    <h4 class="font-bold pl-1">{{item.name}}</h4>
+    <p class="font-thin pl-1">{{item.price | currency:'EUR'}}</p>
+    <p class="font-thin pl-1">{{item.description | shorten}}</p>
+  </section>
+</button>
