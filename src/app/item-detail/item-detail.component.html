@@ -5,7 +5,7 @@
     <h4 class="p-2 font-bold">{{receivedData.name}}</h4>
     <section class="grid grid-cols-2 justify-center">
       <section class="pl-4">
-        <img class="rounded h-40 w-40" [src]="receivedData.imagePath" alt="tennisbal">
+        <img class="rounded h-40 w-40" [src]="receivedData.imagePath" alt="{{receivedData.name}}">
       </section>
       <section>
         <p class="font-bold pl-1">{{receivedData.price | currency:'EUR'}} </p>
