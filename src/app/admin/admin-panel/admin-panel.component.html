@@ -1,1 +1,19 @@
-<p>admin-panel works!</p>
+<app-header></app-header>
+<H1>Welcome to the administration panel</H1>
+<div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+  <section class="grid gap-4 grid-cols-3 md:grid-cols-5 place-items-center">
+    <section *ngFor="let item of items">
+      <section class="border border-solid border-black rounded-md p-3">
+        <img class="rounded mx-auto h-36 w-36 object-contain" [src]="item.imagePath" alt="tennisbal">
+        <h4 class="font-bold pl-1">{{item.name}}</h4>
+        <p class="font-thin pl-1">{{item.price | currency:'EUR'}}</p>
+        <section class="flex">
+        <button>add item</button>
+        <button>edit item</button>
+        <button>remove item</button>
+        </section>
+      </section>
+    </section>
+
+  </section>
+</div>
