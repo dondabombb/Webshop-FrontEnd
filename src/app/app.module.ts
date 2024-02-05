@@ -10,10 +10,10 @@ import {AppComponent} from "./app.component";
 import {AppRoutingModule} from "./app-routing.module";
 import {BrowserModule} from "@angular/platform-browser";
 import {RouterModule} from "@angular/router";
-import {HeaderComponent} from "./re-use/header/header.component";
-import {CartComponent} from "./cart/cart/cart.component";
 import {CartModule} from "./cart/cart.module";
 import {ShortenPipe} from "./_pipe/shorten.pipe";
+import {AdminModule} from "./admin/admin.module";
+
 
 
 @NgModule({
@@ -33,6 +33,7 @@ import {ShortenPipe} from "./_pipe/shorten.pipe";
     BrowserModule,
     AppRoutingModule,
     RouterModule,
+    AdminModule,
   ],
   bootstrap: [
     AppComponent
