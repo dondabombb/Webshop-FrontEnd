@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import {CartComponent} from "./cart/cart.component";
 import {PaymentComponent} from "./payment/payment.component";
 import {ReUseModule} from "../re-use/re-use.module";
+import {AddressComponent} from "./address/address.component";
 
 
 
 @NgModule({
   declarations: [
     CartComponent,
-    PaymentComponent
+    PaymentComponent,
+    AddressComponent
   ],
   imports: [
     CommonModule,
@@ -17,7 +19,8 @@ import {ReUseModule} from "../re-use/re-use.module";
   ],
   exports: [
     CartComponent,
-    PaymentComponent
+    PaymentComponent,
+    AddressComponent
   ]
 })
 export class CartModule { }
