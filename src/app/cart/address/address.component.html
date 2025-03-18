@@ -1,1 +1,25 @@
-<p>address works!</p>
+<h3 class="text-lg font-medium mt-4 mb-2">Address Information</h3>
+<section class="contentgroup">
+  <label for="street">Street</label>
+  <input type="text" formControlName="street" id="street" placeholder="Street" required>
+</section>
+<div class="grid grid-cols-2 gap-4">
+  <section class="contentgroup">
+    <label for="houseNumber">House Number</label>
+    <input type="text" formControlName="houseNumber" id="houseNumber" placeholder="House Number" required>
+  </section>
+  <section class="contentgroup">
+    <label for="postalCode">Postal Code</label>
+    <input type="text" formControlName="postalCode" id="postalCode" placeholder="Postal Code" required>
+  </section>
+</div>
+<div class="grid grid-cols-2 gap-4">
+  <section class="contentgroup">
+    <label for="city">City</label>
+    <input type="text" formControlName="city" id="city" placeholder="City" required>
+  </section>
+  <section class="contentgroup">
+    <label for="country">Country</label>
+    <input type="text" formControlName="country" id="country" placeholder="Country" required>
+  </section>
+</div>

@@ -1,0 +1,111 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Order Details</h1>
+    <button (click)="goBack()" class="text-blue-600 hover:text-blue-900">
+      ← Back to Orders
+    </button>
+  </div>
+
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    {{ error }}
+  </div>
+
+  <div *ngIf="isLoading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+
+  <div *ngIf="!isLoading && order" class="bg-white shadow-md rounded-lg overflow-hidden">
+    <!-- Order Header -->
+    <div class="px-6 py-4 bg-gray-50 border-b">
+      <div class="flex justify-between items-center">
+        <div>
+          <p class="text-sm text-gray-500">Order ID</p>
+          <p class="font-medium">{{ order.id }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Order Date</p>
+          <p class="font-medium">{{ formatDate(order.createdAt) }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Status -->
+    <div class="px-6 py-4 border-b">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-500">Status</p>
+          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="getStatusClass(order.status)">
+            {{ order.status }}
+          </span>
+        </div>
+        <div *ngIf="isAdmin" class="flex items-center space-x-2">
+          <select
+            [(ngModel)]="selectedStatus"
+            class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            [disabled]="isUpdatingStatus">
+            <option *ngFor="let status of orderStatuses" [value]="status">
+              {{ status }}
+            </option>
+          </select>
+          <button
+            (click)="updateOrderStatus()"
+            [disabled]="!selectedStatus || selectedStatus === order.status || isUpdatingStatus"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400">
+            {{ isUpdatingStatus ? 'Updating...' : 'Update Status' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="px-6 py-4 border-b">
+      <h2 class="text-lg font-medium mb-4">Order Items</h2>
+      <div class="space-y-4">
+        <div *ngIf="!order.items?.length" class="text-gray-500 text-center py-4">
+          No items found in this order.
+        </div>
+        <div *ngFor="let item of order.items" class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <img [src]="item.product.imagePath" [alt]="item.product.name" class="w-16 h-16 object-cover rounded">
+            <div>
+              <p class="font-medium">{{ item.product.name }}</p>
+              <p class="text-sm text-gray-500">Quantity: {{ item.quantity }}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="font-medium">€{{ item.price.toFixed(2) }}</p>
+            <p class="text-sm text-gray-500">Total: €{{ (item.price * item.quantity).toFixed(2) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping Address -->
+    <div class="px-6 py-4 border-b">
+      <h2 class="text-lg font-medium mb-4">Shipping Address</h2>
+      <div *ngIf="order.shippingAddress">
+        <p>{{ order.shippingAddress.street }} {{ order.shippingAddress.houseNumber }}</p>
+        <p>{{ order.shippingAddress.postalCode }} {{ order.shippingAddress.city }}</p>
+        <p>{{ order.shippingAddress.country }}</p>
+      </div>
+    </div>
+
+    <!-- Billing Address -->
+    <div class="px-6 py-4 border-b">
+      <h2 class="text-lg font-medium mb-4">Billing Address</h2>
+      <div *ngIf="order.billingAddress">
+        <p>{{ order.billingAddress.street }} {{ order.billingAddress.houseNumber }}</p>
+        <p>{{ order.billingAddress.postalCode }} {{ order.billingAddress.city }}</p>
+        <p>{{ order.billingAddress.country }}</p>
+      </div>
+    </div>
+
+    <!-- Order Total -->
+    <div class="px-6 py-4 bg-gray-50">
+      <div class="flex justify-between items-center">
+        <p class="text-lg font-medium">Total Amount</p>
+        <p class="text-2xl font-bold">€{{ order.totalAmount?.toFixed(2) }}</p>
+      </div>
+    </div>
+  </div>
+</div>

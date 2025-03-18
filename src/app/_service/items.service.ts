@@ -1,135 +1,165 @@
 import {EventEmitter, Injectable} from "@angular/core";
 import {ItemModel} from "../_modals/item.model";
-import {Observable, of} from "rxjs";
+import {Observable, catchError, map, of, tap} from "rxjs";
+import {ApiService} from "./api.service";
+
+interface ApiResponse<T> {
+  success: boolean;
+  status: string;
+  response: {
+    result: T;
+    message: string | null;
+  };
+  token?: string;
+  user?: any;
+}
+
+interface ProductResponse {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  stock: number;
+  active: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-export class ItemsService{
+export class ItemsService {
+  itemsChanged = new EventEmitter<ItemModel[]>();
+  private itemCache: ItemModel[] = [];
 
-  private itemlist : ItemModel[] = [
-    new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),
-    new ItemModel(
-      '2',
-      'voetbal',
-      'een bal denk ik, of niet. daarvoor moet je eerst naar de winkel',
-      9.99,
-      'https://www.voetbalshop.nl/media/catalog/product/cache/1a662e74f62b3db31cb2d94e98c7cd90/2/4/244317_adidas-ek-2024-fussballliebe-league-voetbal-maat-5-wit-zwart-multicolor_1.jpg'
-    ),
-    new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),new ItemModel(
-      '1',
-      'tennisbal',
-      'een bal denk ik',
-      9.99,
-      'https://www.kwd.nl/media/catalog/product/cache/2/image/515x515/9df78eab33525d08d6e5fb8d27136e95/t/e/tennisbal.jpg'
-    ),
-  ]
+  constructor(private apiService: ApiService) {}
 
-  constructor() {
+  private mapToItemModel(item: ProductResponse): ItemModel {
+    console.log('Mapping product response to ItemModel:', item);
+    return new ItemModel(
+      item.id,
+      item.name,
+      item.description,
+      item.price,
+      item.imageUrl
+    );
   }
 
-
-  public getAll(): Observable<ItemModel[]>{
-    return of(this.itemlist);
-
-
-  }
-
-  public getOne(id: String):ItemModel | undefined{
-    for (const element of this.itemlist) {
-      if(element.id == id){
-        return element;
-      }
+  public getAll(): Observable<ItemModel[]> {
+    console.log('Getting all items...');
+    // Return cached items if available
+    if (this.itemCache.length > 0) {
+      console.log('Returning cached items:', this.itemCache);
+      return of([...this.itemCache]);
     }
-    return undefined;
+
+    // Otherwise fetch from API
+    return this.apiService.getAllProducts().pipe(
+      tap(response => {
+        console.log('Raw API response:', response);
+      }),
+      map((response: ApiResponse<ProductResponse[]>) => {
+        console.log('Processing API response:', response);
+        if (response?.response?.result) {
+          console.log('Found items in response:', response.response.result);
+          return response.response.result.map(item => this.mapToItemModel(item));
+        }
+        console.log('No items found in response');
+        return [];
+      }),
+      tap(items => {
+        console.log('Mapped items:', items);
+        this.itemCache = items;
+        this.itemsChanged.emit([...this.itemCache]);
+      }),
+      catchError(error => {
+        console.error('Error fetching products:', error);
+        return of([]);
+      })
+    );
   }
 
-  public addItem(item: ItemModel){
+  public getOne(id: string): Observable<ItemModel | undefined> {
+    // Check cache first
+    const cachedItem = this.itemCache.find(item => item.id === id);
+    if (cachedItem) {
+      return of(cachedItem);
+    }
 
+    // Otherwise fetch from API
+    return this.apiService.getProductById(id).pipe(
+      map((response: ApiResponse<ProductResponse>) => {
+        if (response?.response?.result) {
+          return this.mapToItemModel(response.response.result);
+        }
+        return undefined;
+      }),
+      catchError(error => {
+        console.error(`Error fetching product with id ${id}:`, error);
+        return of(undefined);
+      })
+    );
   }
 
-  public updateItem(id: string){
-
+  public addItem(item: ItemModel): Observable<ItemModel> {
+    return this.apiService.createProduct(item).pipe(
+      map((response: ApiResponse<ProductResponse>) => {
+        if (response?.response?.result) {
+          return this.mapToItemModel(response.response.result);
+        }
+        throw new Error('Invalid response format');
+      }),
+      tap(newItem => {
+        this.itemCache = [...this.itemCache, newItem];
+        this.itemsChanged.emit([...this.itemCache]);
+      }),
+      catchError(error => {
+        console.error('Error adding product:', error);
+        throw error;
+      })
+    );
   }
 
-  public removeItem(id: string){
+  public updateItem(id: string, updatedItem: Partial<ItemModel>): Observable<ItemModel> {
+    return this.apiService.updateProduct(id, updatedItem).pipe(
+      map((response: ApiResponse<ProductResponse>) => {
+        if (response?.response?.result) {
+          return this.mapToItemModel(response.response.result);
+        }
+        throw new Error('Invalid response format');
+      }),
+      tap(updated => {
+        const index = this.itemCache.findIndex(item => item.id === id);
+        if (index !== -1) {
+          this.itemCache = [
+            ...this.itemCache.slice(0, index),
+            updated,
+            ...this.itemCache.slice(index + 1)
+          ];
+          this.itemsChanged.emit([...this.itemCache]);
+        }
+      }),
+      catchError(error => {
+        console.error(`Error updating product with id ${id}:`, error);
+        throw error;
+      })
+    );
+  }
 
+  public removeItem(id: string): Observable<boolean> {
+    return this.apiService.deleteProduct(id).pipe(
+      map(() => {
+        this.itemCache = this.itemCache.filter(item => item.id !== id);
+        this.itemsChanged.emit([...this.itemCache]);
+        return true;
+      }),
+      catchError(error => {
+        console.error(`Error deleting product with id ${id}:`, error);
+        return of(false);
+      })
+    );
+  }
+
+  public clearCache(): void {
+    this.itemCache = [];
   }
 }

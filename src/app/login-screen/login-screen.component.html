@@ -2,26 +2,79 @@
   <section>
     <section class="login-container">
       <section class="form-container">
-        <article class="formtop">
-          <h2 class="formtitle">Log in</h2>
-          <p>Je moet inloggen om iets te bestellen</p>
-        </article>
-        <form class="formcontent" [formGroup]="loginForm">
-          <section class="contentgroup">
-            <label for="email">Email address</label>
-            <input type="email" formControlName="email" id="email" placeholder="Email" required>
-          </section>
-          <section class="contentgroup">
-            <label for="password">Wachtwoord</label>
-            <input type="password" formControlName="password" id="password" placeholder="Wachtwoord" required>
-          </section>
-        </form>
-        <article class="formactions">
-          <app-button class="actionsubmit" [disabled]="!loginForm.valid" styles="main" (onClick)="onSubmit()">Inloggen</app-button>
-        </article>
+        <!-- Login Form -->
+        <div *ngIf="!showRegisterForm">
+          <article class="formtop">
+            <h2 class="formtitle">Log in</h2>
+            <p>Log in to place orders and view your account</p>
+          </article>
+          <form class="formcontent" [formGroup]="loginForm">
+            <section class="contentgroup">
+              <label for="email">Email address</label>
+              <input type="email" formControlName="email" id="email" placeholder="Email" required>
+            </section>
+            <section class="contentgroup">
+              <label for="password">Password</label>
+              <input type="password" formControlName="password" id="password" placeholder="Password" required>
+            </section>
+            <div *ngIf="error" class="error-message text-red-500 mt-2">{{ error }}</div>
+          </form>
+          <article class="formactions">
+            <app-button class="actionsubmit" [disabled]="!loginForm.valid || isLoading" styles="main" (onClick)="onLogin()">
+              {{ isLoading ? 'Logging in...' : 'Login' }}
+            </app-button>
+            <p class="mt-4 text-center">
+              Don't have an account?
+              <a (click)="toggleForm()" class="text-blue-500 cursor-pointer">Register here</a>
+            </p>
+          </article>
+        </div>
+
+        <!-- Registration Form -->
+        <div *ngIf="showRegisterForm">
+          <article class="formtop">
+            <h2 class="formtitle">Register</h2>
+            <p>Create a new account to start shopping</p>
+          </article>
+          <form class="formcontent" [formGroup]="registerForm">
+            <div class="grid grid-cols-2 gap-4">
+              <section class="contentgroup">
+                <label for="firstName">First Name</label>
+                <input type="firstName" formControlName="firstName" id="firstName" placeholder="First Name" required>
+              </section>
+              <section class="contentgroup">
+                <label for="middleName">Middle Name</label>
+                <input type="middleName" formControlName="middleName" id="middleName" placeholder="Middle Name">
+              </section>
+            </div>
+            <section class="contentgroup">
+              <label for="lastName">Last Name</label>
+              <input type="lastName" formControlName="lastName" id="lastName" placeholder="Last Name" required>
+            </section>
+            <section class="contentgroup">
+              <label for="regEmail">Email</label>
+              <input type="email" formControlName="email" id="regEmail" placeholder="Email" required>
+            </section>
+            <section class="contentgroup">
+              <label for="regPassword">Password</label>
+              <input type="password" formControlName="password" id="regPassword" placeholder="Password (min. 8 characters)" required>
+            </section>
+
+            <div *ngIf="error" class="error-message text-red-500 mt-2">{{ error }}</div>
+          </form>
+          <article class="formactions">
+            <app-button class="actionsubmit" [disabled]="!registerForm.valid || isLoading" styles="main" (onClick)="onRegister()">
+              {{ isLoading ? 'Registering...' : 'Register' }}
+            </app-button>
+            <p class="mt-4 text-center">
+              Already have an account?
+              <a (click)="toggleForm()" class="text-blue-500 cursor-pointer">Login here</a>
+            </p>
+          </article>
+        </div>
       </section>
     </section>
-</section>
+  </section>
   <section class="imgbox">
     <img class="centerfit" src="https://images.pexels.com/photos/3029545/pexels-photo-3029545.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="background">
   </section>

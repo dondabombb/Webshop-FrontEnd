@@ -23,16 +23,34 @@ export class ItemDetailComponent implements OnInit{
 
   }
 
-   ngOnInit() {
+  ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
       this.itemId = params['id'];
-    });
 
-    this.receivedData = <ItemModel>this.itemservice.getOne(this.itemId);
+      this.itemservice.getOne(this.itemId).subscribe(item => {
+        if (item) {
+          this.receivedData = item;
+        }
+      });
+    });
   }
 
-  onSubmit(){
-    //sent to cart and save data to database
-    this.cartService.addToCart(this.receivedData);
+  // Voeg deze properties en methodes toe aan je component class
+  quantity: number = 1;
+
+  increaseQuantity(): void {
+    this.quantity++;
+  }
+
+  decreaseQuantity(): void {
+    if (this.quantity > 1) {
+      this.quantity--;
+    }
+  }
+
+  onSubmit(): void {
+
+    this.cartService.addToCart(this.receivedData, this.quantity);
+
   }
 }
