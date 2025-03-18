@@ -4,14 +4,27 @@
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <img class="h-8 w-8 rounded-md"  src="" alt="logo">
+            <img class="h-8 w-8 rounded-md" src="assets/logo.png" alt="Sports Balls Shop">
           </div>
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-0">
-              <a routerLink="/l" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium" aria-current="page">Login</a>
-              <a routerLink="/account" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium" aria-current="page">Account</a>
-              <a routerLink="/admin" *ngIf="true" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium" aria-current="page">Management</a>
-              <a routerLink="/cart" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium" aria-current="page">Cart({{amount}})</a>
+              <a routerLink="/" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium" aria-current="page">Home</a>
+              
+              <!-- Show login link if not logged in -->
+              <a *ngIf="!isLoggedIn" routerLink="/l" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">Login</a>
+              
+              <!-- Show these links only if logged in -->
+              <ng-container *ngIf="isLoggedIn">
+                <a routerLink="/account" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">Account</a>
+                <a routerLink="/orders" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">My Orders</a>
+                <a (click)="logout()" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium cursor-pointer">Logout</a>
+              </ng-container>
+              
+              <!-- Show admin link only for admins -->
+              <a *ngIf="isAdmin" routerLink="/admin" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">Management</a>
+              
+              <!-- Cart is always visible -->
+              <a routerLink="/cart" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">Cart ({{amount}})</a>
             </div>
           </div>
         </div>

@@ -1,28 +1,105 @@
-<button (click)="goBack()"><</button>
 <section class="overflow-hidden bg-white shadow sm:rounded-lg">
   <section class="px-4 py-5 sm:px-6">
     <h3 class="text-lg font-medium leading-6 text-gray-900">Winkelwagen</h3>
     <p class="mt-1 max-w-2xl text-sm text-gray-500">A list of all your current products.</p>
   </section>
-<section class="border-t border-gray-200">
-  <section class="bg-gray-50 px-4 py-5 grid grid-cols-7">
-    <p class="col-span-6"></p>
-    <p class="mt-1 text-sm text-left text-gray-900" id="columnprice">prijs</p>
-  </section>
-  <section class="bg-white grid grid-cols-7" *ngFor="let item of items; let i = index" [attr.data-index]="i" >
-      <section class="pl-4">
-        <img class="rounded h-40 w-40" [src]="item.imagePath" alt="tennisbal">
-      </section>
-      <section class="p-4  col-span-5">
-    <p class="mt-1 text-sm text-gray-900" id="name">{{item.name}}</p>
-      </section>
-      <section class="p-4">
-        <p class="mt-1 text-sm text-gray-900" id="price">{{item.price | currency:'EUR'}}</p>
-      </section>
-    <button>hi</button>
-      </section>
-    </section>
-  <section>
-    price
+
+  <section class="border-t border-gray-200">
+    <!-- Empty cart message -->
+    <div *ngIf="items.length === 0" class="py-10 text-center text-gray-500">
+      Je winkelwagen is leeg
+    </div>
+
+    <!-- Cart items table -->
+    <table *ngIf="items.length > 0" class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Product
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Aantal
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Prijs
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Subtotaal
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Acties
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let item of items">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-10 w-10">
+                <img class="h-10 w-10 rounded-full object-cover" [src]="item.product.imagePath || 'assets/placeholder.png'" alt="{{ item.product.name }}">
+              </div>
+              <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900">{{ item.product.name }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center space-x-2">
+              <button
+                (click)="updateQuantity(item.product.id, item.quantity - 1)"
+                [disabled]="item.quantity <= 1"
+                class="inline-flex items-center justify-center w-6 h-6 text-gray-500 bg-gray-100 rounded-full hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                -
+              </button>
+              <span class="text-sm text-gray-900">{{ item.quantity }}</span>
+              <button
+                (click)="updateQuantity(item.product.id, item.quantity + 1)"
+                class="inline-flex items-center justify-center w-6 h-6 text-gray-500 bg-gray-100 rounded-full hover:bg-gray-200">
+                +
+              </button>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ item.product.price | currency:'EUR' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+            {{ item.product.price * item.quantity | currency:'EUR' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <button
+              (click)="removeItem(item.product.id)"
+              class="text-red-600 hover:text-red-900">
+              Verwijderen
+            </button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="px-6 py-4 text-right text-sm font-medium text-gray-900">
+            Totaal:
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">
+            {{ total | currency:'EUR' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <button
+              (click)="clearCart()"
+              class="text-indigo-600 hover:text-indigo-900">
+              Winkelwagen leegmaken
+            </button>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <!-- Checkout button -->
+    <div *ngIf="items.length > 0" class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+      <button
+        (click)="addAdress()"
+        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Afrekenen
+      </button>
+    </div>
   </section>
 </section>

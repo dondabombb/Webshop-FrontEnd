@@ -1,18 +1,93 @@
-<section class="p-4 flex-grow space-y-3">
-  <section class="border rounded border-solid border-black">
-    <h4 class="p-2 font-bold">{{receivedData.name}}</h4>
-    <section class="grid grid-cols-2 justify-center">
-      <section class="pl-4">
-        <img class="rounded h-40 w-40" [src]="receivedData.imagePath" alt="{{receivedData.name}}">
-      </section>
-      <section>
-        <p class="font-bold pl-1">{{receivedData.price | currency:'EUR'}} </p>
-        <hr>
-        <app-button styles="main" (onClick)="onSubmit()">Leg in winkelwagen</app-button>
-      </section>
-    </section>
-  </section>
-  <section class="p-2 border rounded border-solid border-black">
-    <p>{{receivedData.description}}</p>
-  </section>
+<section class="max-w-7xl mx-auto p-6">
+  <!-- Breadcrumb navigation -->
+  <!-- Breadcrumb navigation -->
+  <nav class="flex mb-6 text-sm text-gray-500">
+    <a [routerLink]="['/']" class="hover:text-gray-700">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-900">{{receivedData.name}}</span>
+  </nav>
+
+  <!-- Product details card -->
+  <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="md:flex">
+      <!-- Product image -->
+      <div class="md:w-1/2 bg-gray-50 flex items-center justify-center p-8">
+        <img
+          class="h-64 w-64 object-contain"
+          [src]="receivedData.imagePath"
+          alt="{{receivedData.name}}"
+          onerror="this.src='assets/placeholder.png'"
+        >
+      </div>
+
+      <!-- Product info -->
+      <div class="md:w-1/2 p-8">
+        <div class="uppercase tracking-wide text-sm text-indigo-600 font-semibold">
+          Product Details
+        </div>
+        <h1 class="mt-2 text-3xl font-extrabold text-gray-900">
+          {{receivedData.name}}
+        </h1>
+
+        <div class="mt-4">
+          <span class="text-2xl font-bold text-gray-900">{{receivedData.price | currency:'EUR'}}</span>
+          <span class="ml-2 text-sm text-gray-500">Inclusief BTW</span>
+        </div>
+
+        <!-- Short description preview -->
+        <div class="mt-4 text-gray-600">
+          <p class="line-clamp-3">{{receivedData.description | slice:0:150}}{{receivedData.description.length > 150 ? '...' : ''}}</p>
+        </div>
+
+        <!-- Add to cart section -->
+        <div class="mt-8 space-y-4">
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center border border-gray-300 rounded-md">
+              <button
+                class="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                (click)="decreaseQuantity()"
+                [disabled]="quantity <= 1"
+              >-</button>
+              <span class="px-4 py-1 border-l border-r border-gray-300">{{quantity}}</span>
+              <button
+                class="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                (click)="increaseQuantity()"
+              >+</button>
+            </div>
+
+            <app-button
+              styles="main"
+              (onClick)="onSubmit()"
+              class="flex-grow"
+            >
+              <span class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
+                </svg>
+                In winkelwagen
+              </span>
+            </app-button>
+          </div>
+
+          <!-- Additional info -->
+          <div class="border-t border-gray-200 pt-4">
+            <div class="flex items-center text-sm text-gray-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              Op voorraad - Vandaag besteld, morgen in huis
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full description -->
+    <div class="border-t border-gray-200 p-8">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">Productbeschrijving</h2>
+      <div class="prose max-w-none text-gray-600">
+        <p>{{receivedData.description}}</p>
+      </div>
+    </div>
+  </div>
 </section>
