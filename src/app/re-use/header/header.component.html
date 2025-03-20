@@ -9,20 +9,22 @@
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-0">
               <a routerLink="/" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium" aria-current="page">Home</a>
-              
+
               <!-- Show login link if not logged in -->
               <a *ngIf="!isLoggedIn" routerLink="/l" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">Login</a>
-              
+
               <!-- Show these links only if logged in -->
               <ng-container *ngIf="isLoggedIn">
                 <a routerLink="/account" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">Account</a>
                 <a routerLink="/orders" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">My Orders</a>
                 <a (click)="logout()" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium cursor-pointer">Logout</a>
               </ng-container>
-              
-              <!-- Show admin link only for admins -->
-              <a *ngIf="isAdmin" routerLink="/admin" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">Management</a>
-              
+
+              <!-- Add this somewhere in your header navigation -->
+              <a *ngIf="authService.isAdmin()" routerLink="/admin" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                Admin Panel
+              </a>
+
               <!-- Cart is always visible -->
               <a routerLink="/cart" class="hover:bg-gray-900 text-white px-3 py-5 text-sm font-medium">Cart ({{amount}})</a>
             </div>

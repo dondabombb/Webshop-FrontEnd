@@ -35,7 +35,6 @@ export class ItemDetailComponent implements OnInit{
     });
   }
 
-  // Voeg deze properties en methodes toe aan je component class
   quantity: number = 1;
 
   increaseQuantity(): void {

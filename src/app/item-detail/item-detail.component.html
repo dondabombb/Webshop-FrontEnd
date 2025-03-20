@@ -1,16 +1,12 @@
 <section class="max-w-7xl mx-auto p-6">
-  <!-- Breadcrumb navigation -->
-  <!-- Breadcrumb navigation -->
   <nav class="flex mb-6 text-sm text-gray-500">
     <a [routerLink]="['/']" class="hover:text-gray-700">Home</a>
     <span class="mx-2">/</span>
     <span class="text-gray-900">{{receivedData.name}}</span>
   </nav>
 
-  <!-- Product details card -->
   <div class="bg-white rounded-lg shadow-lg overflow-hidden">
     <div class="md:flex">
-      <!-- Product image -->
       <div class="md:w-1/2 bg-gray-50 flex items-center justify-center p-8">
         <img
           class="h-64 w-64 object-contain"
@@ -20,7 +16,6 @@
         >
       </div>
 
-      <!-- Product info -->
       <div class="md:w-1/2 p-8">
         <div class="uppercase tracking-wide text-sm text-indigo-600 font-semibold">
           Product Details
@@ -34,12 +29,10 @@
           <span class="ml-2 text-sm text-gray-500">Inclusief BTW</span>
         </div>
 
-        <!-- Short description preview -->
         <div class="mt-4 text-gray-600">
           <p class="line-clamp-3">{{receivedData.description | slice:0:150}}{{receivedData.description.length > 150 ? '...' : ''}}</p>
         </div>
 
-        <!-- Add to cart section -->
         <div class="mt-8 space-y-4">
           <div class="flex items-center space-x-4">
             <div class="flex items-center border border-gray-300 rounded-md">
@@ -82,7 +75,6 @@
       </div>
     </div>
 
-    <!-- Full description -->
     <div class="border-t border-gray-200 p-8">
       <h2 class="text-xl font-bold text-gray-900 mb-4">Productbeschrijving</h2>
       <div class="prose max-w-none text-gray-600">

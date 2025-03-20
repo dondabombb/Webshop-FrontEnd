@@ -1,11 +1,9 @@
 export class AddressModel {
-  constructor(
-    public street: string,
-    public houseNumber: string,
-    public postalCode: string,
-    public city: string,
-    public country: string
-  ) {}
+  street: string = '';
+  city: string = '';
+  postalCode: string = '';
+  country: string = '';
+  houseNumber: string = '';
 }
 
 export class UserModel {
@@ -21,4 +19,4 @@ export class UserModel {
     public billingAddress?: AddressModel,
     public role?: string
   ) {}
-} 
+}

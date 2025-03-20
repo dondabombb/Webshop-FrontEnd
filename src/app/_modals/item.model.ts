@@ -4,14 +4,14 @@ export class ItemModel{
   private readonly _name: string;
   private readonly _description: string;
   private readonly _price: number;
-  private readonly _imagePath: string
+  private readonly _imageUrl: string;
 
-  constructor(id: string, name: string, description: string, price: number, imagePath: string) {
+  constructor(id: string, name: string, description: string, price: number, imageUrl: string) {
   this._id = id;
   this._name = name;
   this._description = description;
   this._price = price;
-  this._imagePath = imagePath
+  this._imageUrl = imageUrl
 }
 
 get id(): string {
@@ -31,7 +31,7 @@ get price():number{
 }
 
 get imagePath():string{
-    return this._imagePath
+    return this._imageUrl
 }
 
 

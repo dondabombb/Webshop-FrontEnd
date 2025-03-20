@@ -1,0 +1,33 @@
+
+.contentgroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.contentgroup label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.contentgroup input {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #ced4da;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.contentgroup input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+.contentgroup button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.contentgroup button:hover {
+  background-color: #0056b3;
+}

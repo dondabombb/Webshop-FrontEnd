@@ -1,18 +1,21 @@
-<H1>Welcome to the administration panel</H1>
+<h1 class="text-2xl font-bold mb-4">Welcome to the Administration Panel</h1>
 <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-  <button>add item</button>
-  <section class="grid gap-4 grid-cols-3 md:grid-cols-5 place-items-center">
-    <section *ngFor="let item of items">
-      <section class="border border-solid border-black rounded-md p-3">
-        <img class="rounded mx-auto h-36 w-36 object-contain" [src]="item.imagePath" alt="tennisbal">
-        <h4 class="font-bold pl-1">{{item.name}}</h4>
-        <p class="font-thin pl-1">{{item.price | currency:'EUR'}}</p>
-        <section class="flex">
-        <button>edit item</button>
-        <button>remove item</button>
-        </section>
+  <button (click)="navigateToCreate()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4">
+    Add New Item
+  </button>
+  <section class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <section *ngFor="let item of items" class="border border-solid border-gray-300 rounded-md p-3 flex flex-col">
+      <img class="rounded mx-auto h-36 w-36 object-contain mb-2" [src]="item.imagePath" [alt]="item.name">
+      <h4 class="font-bold pl-1">{{item.name}}</h4>
+      <p class="font-thin pl-1 mb-2">{{item.price | currency:'EUR'}}</p>
+      <section class="flex justify-between mt-auto">
+        <button (click)="navigateToEdit(item)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-sm">
+          Edit
+        </button>
+        <button (click)="removeItem(item)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm">
+          Remove
+        </button>
       </section>
     </section>
-
   </section>
 </div>
