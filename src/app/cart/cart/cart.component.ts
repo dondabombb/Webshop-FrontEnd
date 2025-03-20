@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import {ShoppingCartService} from "../../_service/shoppingCart.service";
 import {CartItemModel} from "../../_modals/cart.model";
 import {Router} from "@angular/router";
+import { AddressModel } from "../../_modals/user.model";
 
 @Component({
   selector: 'app-cart',
@@ -12,6 +13,8 @@ import {Router} from "@angular/router";
 export class CartComponent implements OnInit {
   items: CartItemModel[] = [];
   total: number = 0;
+  shippingAddress: AddressModel = new AddressModel();
+  billingAddress: AddressModel = new AddressModel();
 
   constructor(private cartService: ShoppingCartService, private router: Router) {}
 
@@ -34,7 +37,7 @@ export class CartComponent implements OnInit {
     this.cartService.clearCart().subscribe();
   }
 
-  addAdress() {
+  goToAddress(): void {
     this.router.navigate(['/cart/address']);
   }
 }

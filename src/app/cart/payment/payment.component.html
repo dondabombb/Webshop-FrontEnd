@@ -1,1 +1,64 @@
-<p>payment works!</p>
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">Betaling</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Payment Method Selection -->
+    <div>
+      <h3 class="text-xl font-semibold mb-4 text-gray-700">Betaalmethode</h3>
+      <select [(ngModel)]="selectedPaymentMethod" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="" disabled selected>Kies een betaalmethode</option>
+        <option value="paypal">Paypal</option>
+        <option value="credit">Creditcard</option>
+        <option value="ideal">iDEAL</option>
+      </select>
+    </div>
+
+    <!-- Order Summary -->
+    <div>
+      <h3 class="text-xl font-semibold mb-4 text-gray-700">Besteloverzicht</h3>
+      <div class="bg-gray-100 p-4 rounded-md">
+        <div *ngFor="let item of items" class="flex justify-between mb-2">
+          <span>{{ item.product.name }} ({{ item.quantity }}x)</span>
+          <span>€{{ (item.product.price * item.quantity).toFixed(2) }}</span>
+        </div>
+        <div class="border-t border-gray-300 my-2"></div>
+        <div class="flex justify-between font-semibold">
+          <span>Subtotaal</span>
+          <span>€{{ subtotal.toFixed(2) }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Verzendkosten</span>
+          <span>€15.00</span>
+        </div>
+        <div class="border-t border-gray-300 my-2"></div>
+        <div class="flex justify-between font-bold">
+          <span>Totaal</span>
+          <span>€{{ (subtotal + 15).toFixed(2) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shipping Address -->
+  <div class="mt-8">
+    <h3 class="text-xl font-semibold mb-4 text-gray-700">Verzendadres</h3>
+    <div class="bg-gray-100 p-4 rounded-md">
+      <p>{{ shippingAddress.street }} {{ shippingAddress.houseNumber }}</p>
+      <p>{{ shippingAddress.postalCode }} {{ shippingAddress.city }}</p>
+      <p>{{ shippingAddress.country }}</p>
+    </div>
+  </div>
+
+  <!-- Submit Payment Button -->
+  <button
+    (click)="processPayment()"
+    [disabled]="!selectedPaymentMethod"
+    class="mt-8 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    Betaling afronden
+  </button>
+
+  <!-- Success/Error Messages -->
+  <div *ngIf="success" class="mt-4 p-4 bg-green-100 text-green-700 rounded-md">{{ success }}</div>
+  <div *ngIf="error" class="mt-4 p-4 bg-red-100 text-red-700 rounded-md">{{ error }}</div>
+</div>

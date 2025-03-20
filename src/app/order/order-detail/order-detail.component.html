@@ -15,7 +15,7 @@
   </div>
 
   <div *ngIf="!isLoading && order" class="bg-white shadow-md rounded-lg overflow-hidden">
-    <!-- Order Header -->
+
     <div class="px-6 py-4 bg-gray-50 border-b">
       <div class="flex justify-between items-center">
         <div>
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <!-- Order Status -->
+
     <div class="px-6 py-4 border-b">
       <div class="flex items-center justify-between">
         <div>
@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <!-- Order Items -->
+
     <div class="px-6 py-4 border-b">
       <h2 class="text-lg font-medium mb-4">Order Items</h2>
       <div class="space-y-4">
@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <!-- Shipping Address -->
+
     <div class="px-6 py-4 border-b">
       <h2 class="text-lg font-medium mb-4">Shipping Address</h2>
       <div *ngIf="order.shippingAddress">
@@ -100,7 +100,7 @@
       </div>
     </div>
 
-    <!-- Order Total -->
+
     <div class="px-6 py-4 bg-gray-50">
       <div class="flex justify-between items-center">
         <p class="text-lg font-medium">Total Amount</p>

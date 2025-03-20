@@ -152,11 +152,11 @@ export class ApiService {
     return this.http.put<ApiResponse<UserModel>>(`${this.apiUrl}/user/${id}`, user, { headers: this.getHeaders(true) });
   }
 
-  updateShippingAddress(id: string, address: AddressModel): Observable<ApiResponse<UserModel>> {
+  updateShippingAddress(id: string | undefined, address: AddressModel): Observable<ApiResponse<UserModel>> {
     return this.http.put<ApiResponse<UserModel>>(`${this.apiUrl}/user/${id}/shipping-address`, address, { headers: this.getHeaders(true) });
   }
 
-  updateBillingAddress(id: string, address: AddressModel): Observable<ApiResponse<UserModel>> {
+  updateBillingAddress(id: string | undefined, address: AddressModel): Observable<ApiResponse<UserModel>> {
     return this.http.put<ApiResponse<UserModel>>(`${this.apiUrl}/user/${id}/billing-address`, address, { headers: this.getHeaders(true) });
   }
 

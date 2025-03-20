@@ -15,17 +15,17 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private cartService: ShoppingCartService,
-    private authService: AuthService,
+    protected authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.cartService.count.subscribe(params => this.amount = params);
-    
+
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
     });
-    
+
     this.authService.isAdmin$.subscribe(isAdmin => {
       this.isAdmin = isAdmin;
     });

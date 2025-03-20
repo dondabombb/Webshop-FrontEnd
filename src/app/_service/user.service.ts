@@ -41,7 +41,7 @@ export class UserService {
     );
   }
 
-  updateShippingAddress(id: string, address: AddressModel): Observable<UserModel> {
+  updateShippingAddress(id: string | undefined, address: AddressModel): Observable<UserModel> {
     return this.apiService.updateShippingAddress(id, address).pipe(
       map((response: ApiResponse<UserModel>) => {
         if (response?.response?.result) {
@@ -52,7 +52,7 @@ export class UserService {
     );
   }
 
-  updateBillingAddress(id: string, address: AddressModel): Observable<UserModel> {
+  updateBillingAddress(id: string | undefined, address: AddressModel): Observable<UserModel> {
     return this.apiService.updateBillingAddress(id, address).pipe(
       map((response: ApiResponse<UserModel>) => {
         if (response?.response?.result) {
@@ -62,4 +62,4 @@ export class UserService {
       })
     );
   }
-} 
+}

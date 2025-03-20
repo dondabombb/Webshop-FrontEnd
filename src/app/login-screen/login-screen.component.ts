@@ -67,7 +67,6 @@ export class LoginScreenComponent {
     this.authService.login(email, password).subscribe({
       next: () => {
         this.isLoading = false;
-        // Sync local cart with server if there are items
         this.cartService.syncLocalCartWithServer().subscribe(() => {
           this.router.navigate(['/']);
         });
