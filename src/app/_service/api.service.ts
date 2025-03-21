@@ -9,12 +9,11 @@ import { OrderModel } from '../_modals/order.model';
 interface ApiResponse<T> {
   success: boolean;
   status: string;
-  response: {
-    result: T;
-    message: string | null;
+  payload: {
+    result?: T;
+    userRole?: string;
+    JWT?: string;
   };
-  token?: string;
-  user?: any;
 }
 
 interface ProductResponse {
