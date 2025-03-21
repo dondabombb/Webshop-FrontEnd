@@ -7,9 +7,10 @@ import { AddressModel } from '../_modals/user.model';
 interface ApiResponse<T> {
   success: boolean;
   status: string;
-  response: {
-    result: T;
-    message: string | null;
+  payload: {
+    result?: T;
+    userRole?: string;
+    JWT?: string;
   };
 }
 
@@ -22,8 +23,8 @@ export class UserService {
   getUserById(id: string): Observable<UserModel> {
     return this.apiService.getUserById(id).pipe(
       map((response: ApiResponse<UserModel>) => {
-        if (response?.response?.result) {
-          return response.response.result;
+        if (response.payload.result) {
+          return response.payload.result;
         }
         throw new Error('Invalid response format');
       })
@@ -33,8 +34,8 @@ export class UserService {
   updateUser(id: string, userData: Partial<UserModel>): Observable<UserModel> {
     return this.apiService.updateUser(id, userData).pipe(
       map((response: ApiResponse<UserModel>) => {
-        if (response?.response?.result) {
-          return response.response.result;
+        if (response.payload.result) {
+          return response.payload.result;
         }
         throw new Error('Invalid response format');
       })
@@ -44,8 +45,8 @@ export class UserService {
   updateShippingAddress(id: string | undefined, address: AddressModel): Observable<UserModel> {
     return this.apiService.updateShippingAddress(id, address).pipe(
       map((response: ApiResponse<UserModel>) => {
-        if (response?.response?.result) {
-          return response.response.result;
+        if (response.payload.result) {
+          return response.payload.result;
         }
         throw new Error('Invalid response format');
       })
@@ -55,8 +56,8 @@ export class UserService {
   updateBillingAddress(id: string | undefined, address: AddressModel): Observable<UserModel> {
     return this.apiService.updateBillingAddress(id, address).pipe(
       map((response: ApiResponse<UserModel>) => {
-        if (response?.response?.result) {
-          return response.response.result;
+        if (response.payload.result) {
+          return response.payload.result;
         }
         throw new Error('Invalid response format');
       })

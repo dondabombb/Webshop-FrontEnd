@@ -6,12 +6,11 @@ import { UserModel } from '../_modals/user.model';
 interface ApiResponse<T> {
   success: boolean;
   status: string;
-  response: {
-    result: T;
-    message: string | null;
+  payload: {
+    result?: T;
+    userRole?: string;
+    JWT?: string;
   };
-  token?: string;
-  user?: any;
 }
 
 @Injectable({
@@ -59,12 +58,21 @@ export class AuthService {
   login(email: string, password: string): Observable<ApiResponse<any>> {
     return this.apiService.login(email, password).pipe(
       tap(response => {
-        if (response && response.token) {
-          this.apiService.setToken(response.token);
-          if (response.user) {
-            const user = response.user as UserModel;
+        if (response && response.success && response.payload) {
+          if (response.payload.JWT) {
+            this.apiService.setToken(response.payload.JWT);
+          }
+          if (response.payload.userRole) {
+            const user: UserModel = {
+              id: '', // You might need to adjust this if the ID is provided in the response
+              email: email,
+              role: response.payload.userRole,
+              // Add other user properties as needed
+            };
             this.currentUserSubject.next(user);
             localStorage.setItem('currentUser', JSON.stringify(user));
+            this.isLoggedInSubject.next(true);
+            this.isAdminSubject.next(user.role === 'ADMIN');
           }
         }
       })

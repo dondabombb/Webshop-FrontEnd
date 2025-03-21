@@ -8,9 +8,10 @@ import {AuthService} from "./auth.service";
 interface ApiResponse<T> {
   success: boolean;
   status: string;
-  response: {
-    result: T;
-    message: string | null;
+  payload: {
+    result?: T;
+    userRole?: string;
+    JWT?: string;
   };
 }
 
@@ -41,8 +42,8 @@ export class ShoppingCartService{
     if (this.authService.isLoggedIn()) {
       this.apiService.getCart().subscribe({
         next: (response: ApiResponse<CartModel>) => {
-          if (response?.response?.result) {
-            this.cart = response.response.result;
+          if (response.payload.result) {
+            this.cart = response.payload.result;
             this.updatedCart.next(this.cart.items);
             this.updateCartCount();
             this.cartSubject.next(this.cart);
@@ -78,8 +79,8 @@ export class ShoppingCartService{
     if (this.authService.isLoggedIn()) {
       return this.apiService.addProductToCart(item.id, quantity).pipe(
         map((response: ApiResponse<CartModel>) => {
-          if (response?.response?.result) {
-            this.cart = response.response.result;
+          if (response.payload.result) {
+            this.cart = response.payload.result;
             this.updatedCart.next(this.cart.items);
             this.updateCartCount();
             this.cartSubject.next(this.cart);
@@ -116,8 +117,8 @@ export class ShoppingCartService{
     if (this.authService.isLoggedIn()) {
       return this.apiService.updateProductQuantity(productId, quantity).pipe(
         map((response: ApiResponse<CartModel>) => {
-          if (response?.response?.result) {
-            this.cart = response.response.result;
+          if (response.payload.result) {
+            this.cart = response.payload.result;
             this.updatedCart.next(this.cart.items);
             this.updateCartCount();
             this.cartSubject.next(this.cart);
@@ -157,8 +158,8 @@ export class ShoppingCartService{
     if (this.authService.isLoggedIn()) {
       return this.apiService.removeProductFromCart(productId).pipe(
         map((response: ApiResponse<CartModel>) => {
-          if (response?.response?.result) {
-            this.cart = response.response.result;
+          if (response.payload.result) {
+            this.cart = response.payload.result;
             this.updatedCart.next(this.cart.items);
             this.updateCartCount();
             this.cartSubject.next(this.cart);
@@ -179,8 +180,8 @@ export class ShoppingCartService{
     if (this.authService.isLoggedIn()) {
       return this.apiService.clearCart().pipe(
         map((response: ApiResponse<CartModel>) => {
-          if (response?.response?.result) {
-            this.cart = response.response.result;
+          if (response.payload.result) {
+            this.cart = response.payload.result;
             this.updatedCart.next(this.cart.items);
             this.updateCartCount();
             this.cartSubject.next(this.cart);
@@ -224,8 +225,8 @@ export class ShoppingCartService{
 
     return addItemObservables[addItemObservables.length - 1].pipe(
       map((response: ApiResponse<CartModel>) => {
-        if (response?.response?.result) {
-          this.cart = response.response.result;
+        if (response.payload.result) {
+          this.cart = response.payload.result;
           this.updatedCart.next(this.cart.items);
           this.updateCartCount();
           localStorage.removeItem('cart');
@@ -248,8 +249,8 @@ export class ShoppingCartService{
 
     return addItemObservables[addItemObservables.length - 1].pipe(
       map((response: ApiResponse<CartModel>) => {
-        if (response?.response?.result) {
-          this.cart = response.response.result;
+        if (response.payload.result) {
+          this.cart = response.payload.result;
           this.updatedCart.next(this.cart.items);
           this.updateCartCount();
           this.cartSubject.next(this.cart);

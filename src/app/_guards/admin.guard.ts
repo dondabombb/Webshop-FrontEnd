@@ -7,12 +7,12 @@ import { AuthService } from '../_service/auth.service';
   providedIn: 'root'
 })
 export class AdminGuard implements CanActivate {
-  
+
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
-  
+
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -20,9 +20,8 @@ export class AdminGuard implements CanActivate {
     if (this.authService.isAdmin()) {
       return true;
     }
-    
-    // Redirect to home page if not admin
+
     this.router.navigate(['/']);
     return false;
   }
-} 
+}

@@ -6,12 +6,11 @@ import {ApiService} from "./api.service";
 interface ApiResponse<T> {
   success: boolean;
   status: string;
-  response: {
-    result: T;
-    message: string | null;
+  payload: {
+    result?: T;
+    userRole?: string;
+    JWT?: string;
   };
-  token?: string;
-  user?: any;
 }
 
 interface ProductResponse {
@@ -59,9 +58,9 @@ export class ItemsService {
       }),
       map((response: ApiResponse<ProductResponse[]>) => {
         console.log('Processing API response:', response);
-        if (response?.response?.result) {
-          console.log('Found items in response:', response.response.result);
-          return response.response.result.map(item => this.mapToItemModel(item));
+        if (response.payload.result) {
+          console.log('Found items in response:', response.payload.result);
+          return response.payload.result.map(item => this.mapToItemModel(item));
         }
         console.log('No items found in response');
         return [];
@@ -88,8 +87,8 @@ export class ItemsService {
     // Otherwise fetch from API
     return this.apiService.getProductById(id).pipe(
       map((response: ApiResponse<ProductResponse>) => {
-        if (response?.response?.result) {
-          return this.mapToItemModel(response.response.result);
+        if (response.payload.result) {
+          return this.mapToItemModel(response.payload.result);
         }
         return undefined;
       }),
@@ -103,8 +102,8 @@ export class ItemsService {
   public addItem(item: ItemModel): Observable<ItemModel> {
     return this.apiService.createProduct(item).pipe(
       map((response: ApiResponse<ProductResponse>) => {
-        if (response?.response?.result) {
-          return this.mapToItemModel(response.response.result);
+        if (response.payload.result) {
+          return this.mapToItemModel(response.payload.result);
         }
         throw new Error('Invalid response format');
       }),
@@ -122,8 +121,8 @@ export class ItemsService {
   public updateItem(id: string, updatedItem: Partial<ItemModel>): Observable<ItemModel> {
     return this.apiService.updateProduct(id, updatedItem).pipe(
       map((response: ApiResponse<ProductResponse>) => {
-        if (response?.response?.result) {
-          return this.mapToItemModel(response.response.result);
+        if (response.payload.result) {
+          return this.mapToItemModel(response.payload.result);
         }
         throw new Error('Invalid response format');
       }),
