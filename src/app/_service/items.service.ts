@@ -1,6 +1,6 @@
 import {EventEmitter, Injectable} from "@angular/core";
 import {ItemModel} from "../_modals/item.model";
-import {Observable, catchError, map, of, tap} from "rxjs";
+import {Observable, catchError, map, of, tap, from} from "rxjs";
 import {ApiService} from "./api.service";
 
 interface ApiResponse<T> {
@@ -52,7 +52,7 @@ export class ItemsService {
     }
 
     // Otherwise fetch from API
-    return this.apiService.getAllProducts().pipe(
+    return from(this.apiService.getAllProducts()).pipe(
       tap(response => {
         console.log('Raw API response:', response);
       }),
@@ -85,7 +85,7 @@ export class ItemsService {
     }
 
     // Otherwise fetch from API
-    return this.apiService.getProductById(id).pipe(
+    return from(this.apiService.getProductById(id)).pipe(
       map((response: ApiResponse<ProductResponse>) => {
         if (response.payload.result) {
           return this.mapToItemModel(response.payload.result);
@@ -100,7 +100,7 @@ export class ItemsService {
   }
 
   public addItem(item: ItemModel): Observable<ItemModel> {
-    return this.apiService.createProduct(item).pipe(
+    return from(this.apiService.createProduct(item)).pipe(
       map((response: ApiResponse<ProductResponse>) => {
         if (response.payload.result) {
           return this.mapToItemModel(response.payload.result);
@@ -119,7 +119,7 @@ export class ItemsService {
   }
 
   public updateItem(id: string, updatedItem: Partial<ItemModel>): Observable<ItemModel> {
-    return this.apiService.updateProduct(id, updatedItem).pipe(
+    return from(this.apiService.updateProduct(id, updatedItem)).pipe(
       map((response: ApiResponse<ProductResponse>) => {
         if (response.payload.result) {
           return this.mapToItemModel(response.payload.result);
@@ -145,7 +145,7 @@ export class ItemsService {
   }
 
   public removeItem(id: string): Observable<boolean> {
-    return this.apiService.deleteProduct(id).pipe(
+    return from(this.apiService.deleteProduct(id)).pipe(
       map(() => {
         this.itemCache = this.itemCache.filter(item => item.id !== id);
         this.itemsChanged.emit([...this.itemCache]);

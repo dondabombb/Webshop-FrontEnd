@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import {BehaviorSubject, from, Observable, tap} from 'rxjs';
 import { ApiService } from './api.service';
 import { UserModel } from '../_modals/user.model';
+import {ApiConnectorService} from "./apiConnector.service";
+import {ShoppingCartService} from "./shoppingCart.service";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -10,6 +12,7 @@ interface ApiResponse<T> {
     result?: T;
     userRole?: string;
     JWT?: string;
+    userId?: string;
   };
 }
 
@@ -24,7 +27,7 @@ export class AuthService {
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   public isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService, private apiConnector: ApiConnectorService) {
     // Check for stored user data on service initialization
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
@@ -51,23 +54,22 @@ export class AuthService {
     lastName: string | null | undefined;
     email: string | null | undefined;
     password: string | null | undefined
-  }): Observable<any> {
+  }): Promise<ApiResponse<any>> {
     return this.apiService.register(user);
   }
 
   login(email: string, password: string): Observable<ApiResponse<any>> {
-    return this.apiService.login(email, password).pipe(
+    return from(this.apiService.login(email, password)).pipe(
       tap(response => {
         if (response && response.success && response.payload) {
           if (response.payload.JWT) {
-            this.apiService.setToken(response.payload.JWT);
+            this.apiConnector.storeToken(response.payload.JWT);
           }
           if (response.payload.userRole) {
             const user: UserModel = {
-              id: '', // You might need to adjust this if the ID is provided in the response
+              id: response.payload.userId,
               email: email,
               role: response.payload.userRole,
-              // Add other user properties as needed
             };
             this.currentUserSubject.next(user);
             localStorage.setItem('currentUser', JSON.stringify(user));
@@ -80,7 +82,7 @@ export class AuthService {
   }
 
   logout(): void {
-    this.apiService.removeToken();
+    this.apiConnector.removeToken();
     this.currentUserSubject.next(null);
     localStorage.removeItem('currentUser');
     this.isLoggedInSubject.next(false);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import {Observable, map, from} from 'rxjs';
 import { ApiService } from './api.service';
 import { UserModel } from '../_modals/user.model';
 import { AddressModel } from '../_modals/user.model';
@@ -21,7 +21,7 @@ export class UserService {
   constructor(private apiService: ApiService) {}
 
   getUserById(id: string): Observable<UserModel> {
-    return this.apiService.getUserById(id).pipe(
+    return from(this.apiService.getUserById(id)).pipe(
       map((response: ApiResponse<UserModel>) => {
         if (response.payload.result) {
           return response.payload.result;
@@ -32,7 +32,7 @@ export class UserService {
   }
 
   updateUser(id: string, userData: Partial<UserModel>): Observable<UserModel> {
-    return this.apiService.updateUser(id, userData).pipe(
+    return from(this.apiService.updateUser(id, userData)).pipe(
       map((response: ApiResponse<UserModel>) => {
         if (response.payload.result) {
           return response.payload.result;
@@ -43,7 +43,7 @@ export class UserService {
   }
 
   updateShippingAddress(id: string | undefined, address: AddressModel): Observable<UserModel> {
-    return this.apiService.updateShippingAddress(id, address).pipe(
+    return from(this.apiService.updateShippingAddress(id, address)).pipe(
       map((response: ApiResponse<UserModel>) => {
         if (response.payload.result) {
           return response.payload.result;
@@ -54,7 +54,7 @@ export class UserService {
   }
 
   updateBillingAddress(id: string | undefined, address: AddressModel): Observable<UserModel> {
-    return this.apiService.updateBillingAddress(id, address).pipe(
+    return from(this.apiService.updateBillingAddress(id, address)).pipe(
       map((response: ApiResponse<UserModel>) => {
         if (response.payload.result) {
           return response.payload.result;
