@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AuthService } from "../_service/auth.service";
 import { ShoppingCartService } from "../_service/shoppingCart.service";
+import {from} from "rxjs";
 
 @Component({
   selector: 'app-login-screen',
@@ -65,11 +66,16 @@ export class LoginScreenComponent {
     }
 
     this.authService.login(email, password).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.cartService.syncLocalCartWithServer().subscribe(() => {
-          this.router.navigate(['/']);
-        });
+      next: (response) => {
+        if (response && response.success) {
+          this.isLoading = false;
+          this.cartService.syncLocalCartWithServer().subscribe(() => {
+            this.router.navigate(['/']);
+          });
+        } else {
+          this.isLoading = false;
+          this.error = response?.payload?.result || "Login failed. Please check your credentials.";
+        }
       },
       error: (error) => {
         this.isLoading = false;
@@ -98,7 +104,7 @@ export class LoginScreenComponent {
       password: formValues.password
     };
 
-    this.authService.register(user).subscribe({
+    from(this.authService.register(user)).subscribe({
       next: () => {
         this.isLoading = false;
         this.showRegisterForm = false;

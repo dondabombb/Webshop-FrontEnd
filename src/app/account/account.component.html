@@ -88,46 +88,5 @@
         </button>
       </form>
     </div>
-
-    <!-- Billing Address -->
-    <div class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-lg font-medium mb-4">Billing Address</h2>
-      <form [formGroup]="billingAddressForm" (ngSubmit)="updateBillingAddress()" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Street</label>
-          <input type="text" formControlName="street"
-                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">House Number</label>
-            <input type="text" formControlName="houseNumber"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Postal Code</label>
-            <input type="text" formControlName="postalCode"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">City</label>
-            <input type="text" formControlName="city"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Country</label>
-            <input type="text" formControlName="country"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-          </div>
-        </div>
-        <button type="submit"
-                [disabled]="!billingAddressForm.valid || billingAddressForm.pristine"
-                class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400">
-          Update Billing Address
-        </button>
-      </form>
-    </div>
   </div>
 </div>

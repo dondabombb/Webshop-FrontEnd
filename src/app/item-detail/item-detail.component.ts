@@ -12,24 +12,35 @@ import {HeaderComponent} from "../re-use/header/header.component";
   styleUrl: './item-detail.component.scss'
 })
 export class ItemDetailComponent implements OnInit{
-  receivedData!: ItemModel;
+  receivedData: ItemModel | null = null;
   itemId: string;
+  isLoading = true;
+  error: string | null = null;
 
   constructor(private route: Router,
               private activatedRoute: ActivatedRoute,
               private itemservice: ItemsService,
-              private cartService: ShoppingCartService,) {
-
-
-  }
+              private cartService: ShoppingCartService,) {}
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
       this.itemId = params['id'];
+      this.isLoading = true;
+      this.error = null;
 
-      this.itemservice.getOne(this.itemId).subscribe(item => {
-        if (item) {
-          this.receivedData = item;
+      this.itemservice.getOne(this.itemId).subscribe({
+        next: (item) => {
+          if (item) {
+            this.receivedData = item;
+          } else {
+            this.error = 'Product not found';
+          }
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.error = 'Failed to load product details';
+          this.isLoading = false;
+          console.error('Error loading product:', error);
         }
       });
     });
@@ -48,8 +59,16 @@ export class ItemDetailComponent implements OnInit{
   }
 
   onSubmit(): void {
-
-    this.cartService.addToCart(this.receivedData, this.quantity);
-
+    if (this.receivedData) {
+      this.cartService.addToCart(this.receivedData, this.quantity).subscribe({
+        next: (cart) => {
+          // Cart was successfully updated
+          console.log('Item added to cart:', cart);
+        },
+        error: (error) => {
+          console.error('Error adding item to cart:', error);
+        }
+      });
+    }
   }
 }

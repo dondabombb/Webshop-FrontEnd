@@ -1,5 +1,5 @@
  import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import {Observable, map, from} from 'rxjs';
 import { ApiService } from './api.service';
 import { OrderModel, OrderStatus } from '../_modals/order.model';
 import { AddressModel } from '../_modals/user.model';
@@ -25,7 +25,7 @@ export class OrderService {
   ) {}
 
   createOrder(shippingAddress: AddressModel, billingAddress: AddressModel): Observable<OrderModel> {
-    return this.apiService.createOrder(shippingAddress, billingAddress).pipe(
+    return from(this.apiService.createOrder(shippingAddress, billingAddress)).pipe(
       map((response: ApiResponse<OrderModel>) => {
         if (response.payload.result) {
           // Clear the cart after successful order
@@ -38,7 +38,7 @@ export class OrderService {
   }
 
   getOrderById(id: string): Observable<OrderModel> {
-    return this.apiService.getOrderById(id).pipe(
+    return from(this.apiService.getOrderById(id)).pipe(
       map((response: ApiResponse<OrderModel>) => {
         if (response.payload.result) {
           return response.payload.result;
@@ -49,7 +49,7 @@ export class OrderService {
   }
 
   getUserOrders(): Observable<OrderModel[]> {
-    return this.apiService.getUserOrders().pipe(
+    return from(this.apiService.getUserOrders()).pipe(
       map((response: ApiResponse<OrderModel[]>) => {
         if (response.payload.result) {
           return response.payload.result;
@@ -60,7 +60,7 @@ export class OrderService {
   }
 
   getAllOrders(): Observable<OrderModel[]> {
-    return this.apiService.getAllOrders().pipe(
+    return from(this.apiService.getAllOrders()).pipe(
       map((response: ApiResponse<OrderModel[]>) => {
         if (response.payload.result) {
           return response.payload.result;
@@ -71,7 +71,7 @@ export class OrderService {
   }
 
   updateOrderStatus(id: string, status: OrderStatus): Observable<OrderModel> {
-    return this.apiService.updateOrderStatus(id, status).pipe(
+    return from(this.apiService.updateOrderStatus(id, status)).pipe(
       map((response: ApiResponse<OrderModel>) => {
         if (response.payload.result) {
           return response.payload.result;

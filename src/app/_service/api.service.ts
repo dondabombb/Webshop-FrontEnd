@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { UserModel, AddressModel } from '../_modals/user.model';
 import { ItemModel } from '../_modals/item.model';
 import { CartModel } from '../_modals/cart.model';
 import { OrderModel } from '../_modals/order.model';
+import { ApiConnectorService } from './apiConnector.service';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -30,136 +29,150 @@ interface ProductResponse {
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = "http://localhost:8080/api"
-  private token: string | null = null;
-
-  constructor(private http: HttpClient) {
-    this.token = localStorage.getItem('token');
-  }
-
-  // Helper methods
-  private getHeaders(requiresAuth: boolean = false): HttpHeaders {
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    if (requiresAuth && this.token) {
-      headers = headers.set('Authorization', `Bearer ${this.token}`);
-    }
-
-    return headers;
-  }
-
-  setToken(token: string): void {
-    this.token = token;
-    localStorage.setItem('token', token);
-  }
-
-  removeToken(): void {
-    this.token = null;
-    localStorage.removeItem('token');
-  }
+  constructor(private apiConnector: ApiConnectorService) {}
 
   // Authentication
-  register(user: {
+  async register(user: {
     firstName: string | null | undefined;
     middleName: string;
     lastName: string | null | undefined;
     email: string | null | undefined;
     password: string | null | undefined;
-  }): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/auth/register`, user, { headers: this.getHeaders() });
+  }): Promise<ApiResponse<any>> {
+    const response = await this.apiConnector.noAuth().post('/auth/register', user);
+    return response.data;
   }
 
-  login(email: string, password: string): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/auth/login`, { email, password }, { headers: this.getHeaders() });
+  async login(email: string, password: string): Promise<ApiResponse<any>> {
+    const response = await this.apiConnector.noAuth().post('/auth/login', { email, password });
+    return response.data;
   }
 
   // Products
-  getAllProducts(): Observable<ApiResponse<ProductResponse[]>> {
-    return this.http.get<ApiResponse<ProductResponse[]>>(`${this.apiUrl}/product`, { headers: this.getHeaders() });
+  async getAllProducts(): Promise<ApiResponse<ProductResponse[]>> {
+    const response = await this.apiConnector.noAuth().get('/product');
+    return response.data;
   }
 
-  getProductById(id: string): Observable<ApiResponse<ProductResponse>> {
-    return this.http.get<ApiResponse<ProductResponse>>(`${this.apiUrl}/product/${id}`, { headers: this.getHeaders() });
+  async getProductById(id: string): Promise<ApiResponse<ProductResponse>> {
+    const response = await this.apiConnector.noAuth().get(`/product/${id}`);
+    return response.data;
   }
 
-  createProduct(product: ItemModel): Observable<ApiResponse<ProductResponse>> {
-    return this.http.post<ApiResponse<ProductResponse>>(`${this.apiUrl}/product`, product, { headers: this.getHeaders(true) });
+  async createProduct(product: ItemModel): Promise<ApiResponse<ProductResponse>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.post('/product', product);
+    return response.data;
   }
 
-  updateProduct(id: string, product: Partial<ItemModel>): Observable<ApiResponse<ProductResponse>> {
-    return this.http.put<ApiResponse<ProductResponse>>(`${this.apiUrl}/product/${id}`, product, { headers: this.getHeaders(true) });
+  async updateProduct(id: string, product: Partial<ItemModel>): Promise<ApiResponse<ProductResponse>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.put(`/product/${id}`, product);
+    return response.data;
   }
 
-  deleteProduct(id: string): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/product/${id}`, { headers: this.getHeaders(true) });
+  async deleteProduct(id: string): Promise<ApiResponse<void>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.delete(`/product/${id}`);
+    return response.data;
   }
 
   // Cart
-  getCart(): Observable<ApiResponse<CartModel>> {
-    return this.http.get<ApiResponse<CartModel>>(`${this.apiUrl}/cart`, { headers: this.getHeaders(true) });
+  async getCart(): Promise<ApiResponse<CartModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.get('/cart');
+    return response.data;
   }
 
-  addProductToCart(productId: string, quantity: number): Observable<ApiResponse<CartModel>> {
-    return this.http.post<ApiResponse<CartModel>>(`${this.apiUrl}/cart/add`, { productId, quantity }, { headers: this.getHeaders(true) });
+  async addProductToCart(cartId: string, productId: string, quantity: number): Promise<ApiResponse<CartModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.post('/cart/products', { cartId, productId, quantity });
+    return response.data;
   }
 
-  updateProductQuantity(productId: string, quantity: number): Observable<ApiResponse<CartModel>> {
-    return this.http.put<ApiResponse<CartModel>>(`${this.apiUrl}/cart/update/${productId}`, { quantity }, { headers: this.getHeaders(true) });
+  async removeProductFromCart(cartId: string, productId: string, quantity: number): Promise<ApiResponse<CartModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.delete('/cart/products', { params: { cartId, productId, quantity } });
+    return response.data;
   }
 
-  removeProductFromCart(productId: string): Observable<ApiResponse<CartModel>> {
-    return this.http.delete<ApiResponse<CartModel>>(`${this.apiUrl}/cart/remove/${productId}`, { headers: this.getHeaders(true) });
+  async clearCart(): Promise<ApiResponse<CartModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.delete('/cart/clear');
+    return response.data;
   }
 
-  clearCart(): Observable<ApiResponse<CartModel>> {
-    return this.http.delete<ApiResponse<CartModel>>(`${this.apiUrl}/cart/clear`, { headers: this.getHeaders(true) });
+  async updateCart(cart: CartModel): Promise<ApiResponse<CartModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.put('/cart', cart.items);
+    return response.data;
   }
 
   // Orders
-  createOrder(shippingAddress: AddressModel, billingAddress: AddressModel): Observable<ApiResponse<OrderModel>> {
-    return this.http.post<ApiResponse<OrderModel>>(`${this.apiUrl}/order`, { shippingAddress, billingAddress }, { headers: this.getHeaders(true) });
+  async createOrder(shippingAddress: AddressModel, billingAddress: AddressModel): Promise<ApiResponse<OrderModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.post('/order', { shippingAddress, billingAddress });
+    return response.data;
   }
 
-  getOrderById(id: string): Observable<ApiResponse<OrderModel>> {
-    return this.http.get<ApiResponse<OrderModel>>(`${this.apiUrl}/order/${id}`, { headers: this.getHeaders(true) });
+  async getOrderById(id: string): Promise<ApiResponse<OrderModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.get(`/order/${id}`);
+    return response.data;
   }
 
-  getUserOrders(): Observable<ApiResponse<OrderModel[]>> {
-    return this.http.get<ApiResponse<OrderModel[]>>(`${this.apiUrl}/order/user`, { headers: this.getHeaders(true) });
+  async getUserOrders(): Promise<ApiResponse<OrderModel[]>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.get('/order/user');
+    return response.data;
   }
 
-  getAllOrders(): Observable<ApiResponse<OrderModel[]>> {
-    return this.http.get<ApiResponse<OrderModel[]>>(`${this.apiUrl}/order`, { headers: this.getHeaders(true) });
+  async getAllOrders(): Promise<ApiResponse<OrderModel[]>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.get('/order');
+    return response.data;
   }
 
-  updateOrderStatus(id: string, status: string): Observable<ApiResponse<OrderModel>> {
-    return this.http.put<ApiResponse<OrderModel>>(`${this.apiUrl}/order/${id}/status`, { status }, { headers: this.getHeaders(true) });
+  async updateOrderStatus(id: string, status: string): Promise<ApiResponse<OrderModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.put(`/order/${id}/status`, { status });
+    return response.data;
   }
 
   // Users
-  getUserById(id: string): Observable<ApiResponse<UserModel>> {
-    return this.http.get<ApiResponse<UserModel>>(`${this.apiUrl}/user/${id}`, { headers: this.getHeaders(true) });
+  async getUserById(id: string): Promise<ApiResponse<UserModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.get(`/user/${id}`);
+    return response.data;
   }
 
-  getAllUsers(): Observable<ApiResponse<UserModel[]>> {
-    return this.http.get<ApiResponse<UserModel[]>>(`${this.apiUrl}/user`, { headers: this.getHeaders(true) });
+  async getAllUsers(): Promise<ApiResponse<UserModel[]>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.get('/user');
+    return response.data;
   }
 
-  updateUser(id: string, user: Partial<UserModel>): Observable<ApiResponse<UserModel>> {
-    return this.http.put<ApiResponse<UserModel>>(`${this.apiUrl}/user/${id}`, user, { headers: this.getHeaders(true) });
+  async updateUser(id: string, user: Partial<UserModel>): Promise<ApiResponse<UserModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.put(`/user/${id}`, user);
+    return response.data;
   }
 
-  updateShippingAddress(id: string | undefined, address: AddressModel): Observable<ApiResponse<UserModel>> {
-    return this.http.put<ApiResponse<UserModel>>(`${this.apiUrl}/user/${id}/shipping-address`, address, { headers: this.getHeaders(true) });
+  async updateShippingAddress(id: string | undefined, address: AddressModel): Promise<ApiResponse<UserModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.put(`/user/${id}/shipping-address`, address);
+    return response.data;
   }
 
-  updateBillingAddress(id: string | undefined, address: AddressModel): Observable<ApiResponse<UserModel>> {
-    return this.http.put<ApiResponse<UserModel>>(`${this.apiUrl}/user/${id}/billing-address`, address, { headers: this.getHeaders(true) });
+  async updateBillingAddress(id: string | undefined, address: AddressModel): Promise<ApiResponse<UserModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.put(`/user/${id}/billing-address`, address);
+    return response.data;
   }
 
-  deleteUser(id: string): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/user/${id}`, { headers: this.getHeaders(true) });
+  async deleteUser(id: string): Promise<ApiResponse<void>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.delete(`/user/${id}`);
+    return response.data;
   }
 }
