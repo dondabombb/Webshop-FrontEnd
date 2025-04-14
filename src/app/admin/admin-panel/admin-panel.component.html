@@ -5,7 +5,7 @@
   </button>
   <section class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
     <section *ngFor="let item of items" class="border border-solid border-gray-300 rounded-md p-3 flex flex-col">
-      <img class="rounded mx-auto h-36 w-36 object-contain mb-2" [src]="item.imagePath" [alt]="item.name">
+      <img class="rounded mx-auto h-36 w-36 object-contain mb-2" [src]="item.imageUrl" [alt]="item.name">
       <h4 class="font-bold pl-1">{{item.name}}</h4>
       <p class="font-thin pl-1 mb-2">{{item.price | currency:'EUR'}}</p>
       <section class="flex justify-between mt-auto">

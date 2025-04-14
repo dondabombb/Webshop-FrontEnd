@@ -10,6 +10,7 @@ export enum OrderStatus {
 }
 
 export class OrderItemModel {
+  item: { imagePath: string; };
   constructor(
     public product: ItemModel,
     public quantity: number,
@@ -23,10 +24,10 @@ export class OrderModel {
     public userId?: string,
     public items?: OrderItemModel[],
     public totalAmount?: number,
-    public status?: OrderStatus,
+    public orderStatus?: OrderStatus,
     public shippingAddress?: AddressModel,
     public billingAddress?: AddressModel,
-    public createdAt?: Date,
+    public orderDate?: Date,
     public paymentMethod?: String
   ) {}
 }

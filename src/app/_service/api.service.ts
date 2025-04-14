@@ -128,7 +128,7 @@ export class ApiService {
 
   async getUserOrders(): Promise<ApiResponse<OrderModel[]>> {
     const authInstance = await this.apiConnector.auth();
-    const response = await authInstance.get('/order/user');
+    const response = await authInstance.get('/user/orders');
     return response.data;
   }
 

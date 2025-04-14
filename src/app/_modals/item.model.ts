@@ -30,7 +30,7 @@ get price():number{
     return this._price;
 }
 
-get imagePath():string{
+get imageUrl():string{
     return this._imageUrl
 }
 

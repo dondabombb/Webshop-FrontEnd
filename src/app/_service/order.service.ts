@@ -28,8 +28,8 @@ export class OrderService {
     return from(this.apiService.createOrder(paymentMethod)).pipe(
       map((response: ApiResponse<OrderModel>) => {
         if (response.payload.result) {
-          // Clear the cart after successful order
           this.cartService.clearCart();
+          this.cartService.forceCartReload();
           return response.payload.result;
         }
         throw new Error('Invalid response format');
@@ -51,9 +51,11 @@ export class OrderService {
   getUserOrders(): Observable<OrderModel[]> {
     return from(this.apiService.getUserOrders()).pipe(
       map((response: ApiResponse<OrderModel[]>) => {
-        if (response.payload.result) {
+        console.log('API Response:', response); // Debug log
+        if (response && response.payload && Array.isArray(response.payload.result)) {
           return response.payload.result;
         }
+        console.warn('Invalid response format:', response);
         return [];
       })
     );
@@ -62,9 +64,11 @@ export class OrderService {
   getAllOrders(): Observable<OrderModel[]> {
     return from(this.apiService.getAllOrders()).pipe(
       map((response: ApiResponse<OrderModel[]>) => {
-        if (response.payload.result) {
+        console.log('API Response:', response); // Debug log
+        if (response && response.payload && Array.isArray(response.payload.result)) {
           return response.payload.result;
         }
+        console.warn('Invalid response format:', response);
         return [];
       })
     );
