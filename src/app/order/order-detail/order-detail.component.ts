@@ -1,6 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../_service/order.service';
 import { OrderModel, OrderStatus } from '../../_modals/order.model';
@@ -8,79 +6,63 @@ import { AuthService } from '../../_service/auth.service';
 
 @Component({
   selector: 'app-order-detail',
-  standalone: true,
-  imports: [
-    NgForOf,
-    NgIf,
-    ReactiveFormsModule,
-    FormsModule,
-    NgClass
-  ],
+  standalone: false,
   templateUrl: './order-detail.component.html',
   styleUrl: './order-detail.component.scss'
 })
 export class OrderDetailComponent implements OnInit {
-  set selectedStatus(value: OrderStatus | undefined) {
-    this._selectedStatus = value;
-  }
-  order: OrderModel | null = null;
+  receivedData: OrderModel | null = null;
   isLoading = true;
   error: string | null = null;
   isAdmin = false;
   orderStatuses = Object.values(OrderStatus);
-  private _selectedStatus: OrderStatus | undefined = undefined;
+  selectedStatus: OrderStatus | undefined = undefined;
   isUpdatingStatus = false;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
+    private route: Router,
+    private activatedRoute: ActivatedRoute,  // Add this
     private orderService: OrderService,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
-    const orderId = this.route.snapshot.paramMap.get('id');
-
-    if (orderId) {
-      this.loadOrder(orderId);
+    
+    const state = history.state;
+    if (state && state.order) {
+      this.receivedData = state.order;
+      if (this.receivedData?.items) {
+        this.receivedData.items.forEach(item => {
+          if (item.product) {
+            console.log('Product:', item.product);
+            // Use imageUrl if available, otherwise fallback to placeholder
+            item.product = Object.assign({}, item.product, {
+              ...item.product,
+              imagePath: item.product.imageUrl || 'assets/placeholder.png'
+            });
+          }
+        });
+      }
+      this.selectedStatus = state.order.orderStatus;
+      this.isLoading = false;
     } else {
-      this.error = 'Order ID not found';
+      this.error = 'Order data not found';
       this.isLoading = false;
     }
   }
 
-  loadOrder(orderId: string): void {
-    this.orderService.getOrderById(orderId).subscribe({
-      next: (order) => {
-        if (!this.isAdmin && order.userId !== this.authService.getCurrentUserId()) {
-          this.error = 'You do not have permission to view this order';
-          this.isLoading = false;
-          return;
-        }
-
-        this.order = order;
-        this._selectedStatus = order.status;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.error = 'Failed to load order details. Please try again.';
-        this.isLoading = false;
-        console.error('Error loading order:', error);
-      }
-    });
-  }
-
+  // Update other methods to use receivedData instead of order
   updateOrderStatus(): void {
-    if (!this.order || !this.order.id || !this._selectedStatus || this._selectedStatus === this.order.status) {
+    if (!this.receivedData || !this.receivedData.id || !this.selectedStatus || this.selectedStatus === this.receivedData.orderStatus) {
       return;
     }
 
     this.isUpdatingStatus = true;
 
-    this.orderService.updateOrderStatus(this.order.id, this._selectedStatus).subscribe({
+    this.orderService.updateOrderStatus(this.receivedData.id, this.selectedStatus).subscribe({
       next: (updatedOrder) => {
-        this.order = updatedOrder;
+        this.receivedData = updatedOrder;
         this.isUpdatingStatus = false;
       },
       error: (error) => {
@@ -116,6 +98,6 @@ export class OrderDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/orders']);
+    this.route.navigate(['/orders']);
   }
 }

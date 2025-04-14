@@ -1,7 +1,7 @@
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {RouterLink} from "@angular/router";
 
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { OrderService } from '../_service/order.service';
 import { OrderModel, OrderStatus } from '../_modals/order.model';
 import { Router } from '@angular/router';
@@ -9,14 +9,8 @@ import { AuthService } from '../_service/auth.service';
 
 @Component({
   selector: 'app-order',
-  standalone: true,
-  imports: [
-    NgForOf,
-    NgIf,
-    RouterLink,
-    NgClass
-  ],
   templateUrl: './order.component.html',
+  standalone: false,
   styleUrl: './order.component.scss'
 })
 export class OrderComponent implements OnInit {
@@ -24,6 +18,7 @@ export class OrderComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
   isAdmin = false;
+  @Output() dataToSend: EventEmitter<OrderModel> = new EventEmitter();
 
   constructor(
     private orderService: OrderService,
@@ -57,8 +52,10 @@ export class OrderComponent implements OnInit {
     });
   }
 
-  viewOrderDetails(orderId: string | undefined): void {
-    this.router.navigate(['/orders', orderId]);
+  viewOrderDetails(order: OrderModel): void {
+    this.router.navigate(['/orders', order.id], {
+      state: { order }
+    });
   }
 
   getStatusClass(status: OrderStatus | undefined): string {

@@ -17,6 +17,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {OrderComponent} from './order/order.component';
 import {OrderDetailComponent} from './order/order-detail/order-detail.component';
 import {AccountComponent} from './account/account.component';
+import {OrderListComponent} from "./order/order-list/order-list.component";
 
 
 
@@ -27,6 +28,9 @@ import {AccountComponent} from './account/account.component';
     LoginScreenComponent,
     ItemListComponent,
     ItemDetailComponent,
+    OrderComponent,
+    OrderDetailComponent,
+    OrderListComponent,
     ShortenPipe
   ],
   imports: [
@@ -40,8 +44,6 @@ import {AccountComponent} from './account/account.component';
     RouterModule,
     AdminModule,
     HttpClientModule,
-    OrderComponent,
-    OrderDetailComponent,
     AccountComponent,
   ],
   bootstrap: [

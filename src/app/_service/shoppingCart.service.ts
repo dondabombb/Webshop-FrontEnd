@@ -37,11 +37,12 @@ export class ShoppingCartService{
     });
   }
 
-  private loadCart(): void {
+  // Change from private to public
+  public loadCart(): Observable<CartModel> {
     if (this.authService.isLoggedIn()) {
       this.isLoading.next(true);
-      from(this.apiService.getCart()).subscribe({
-        next: (response: ApiResponse<CartModel>) => {
+      return from(this.apiService.getCart()).pipe(
+        map((response: ApiResponse<CartModel>) => {
           if (response.success && response.payload.result) {
             this.cart = this.mapToCartModel(response.payload.result);
             this.mergeWithLocalStorage();
@@ -51,15 +52,18 @@ export class ShoppingCartService{
             this.loadFromLocalStorage();
           }
           this.isLoading.next(false);
-        },
-        error: (error) => {
+          return this.cart;
+        }),
+        catchError(error => {
           console.error('Error loading cart:', error);
           this.loadFromLocalStorage();
           this.isLoading.next(false);
-        }
-      });
+          return of(this.cart);
+        })
+      );
     } else {
       this.loadFromLocalStorage();
+      return of(this.cart);
     }
   }
 
@@ -287,10 +291,10 @@ export class ShoppingCartService{
 
   public clearCart(): Observable<CartModel> {
     if (this.authService.isLoggedIn()) {
-      return from(this.apiService.clearCart()).pipe(
+      return from(this.apiService.getCart()).pipe(
         map((response: ApiResponse<CartModel>) => {
           if (response.payload.result) {
-            this.cart = response.payload.result;
+            this.cart = this.mapToCartModel(response.payload.result);
             this.updateCartState();
             localStorage.removeItem('cart');
             return this.cart;
@@ -370,5 +374,24 @@ export class ShoppingCartService{
 
   public getIsLoading(): Observable<boolean> {
     return this.isLoading.asObservable();
+  }
+
+  public forceCartReload(): void {
+    if (this.authService.isLoggedIn()) {
+      this.isLoading.next(true);
+      from(this.apiService.getCart()).subscribe({
+        next: (response: ApiResponse<CartModel>) => {
+          if (response.success && response.payload.result) {
+            this.cart = this.mapToCartModel(response.payload.result);
+            this.updateCartState();
+          }
+          this.isLoading.next(false);
+        },
+        error: (error) => {
+          console.error('Error reloading cart:', error);
+          this.isLoading.next(false);
+        }
+      });
+    }
   }
 }

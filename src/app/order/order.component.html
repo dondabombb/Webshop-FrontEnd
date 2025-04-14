@@ -17,49 +17,34 @@
   </div>
 
   <div *ngIf="!isLoading && orders.length > 0" class="bg-white shadow-md rounded-lg overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-      <tr>
-        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          Order ID
-        </th>
-        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          Date
-        </th>
-        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          Total
-        </th>
-        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          Status
-        </th>
-        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          Actions
-        </th>
-      </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-      <tr *ngFor="let order of orders" class="hover:bg-gray-50">
-        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-          {{ order.id }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ formatDate(order.createdAt) }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          €{{ order.totalAmount?.toFixed(2) }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap">
-            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="getStatusClass(order.status)">
-              {{ order.status }}
+    <div class="min-w-full divide-y divide-gray-200">
+      <!-- Header -->
+      <div class="bg-gray-50">
+        <div class="grid grid-cols-5 gap-4">
+          <div class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</div>
+          <div class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</div>
+          <div class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</div>
+          <div class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</div>
+          <div class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</div>
+        </div>
+      </div>
+      <!-- Body -->
+      <div class="bg-white divide-y divide-gray-200">
+        <div *ngFor="let order of orders" 
+             class="grid grid-cols-5 gap-4 hover:bg-gray-50 cursor-pointer" 
+             (click)="viewOrderDetails(order)">
+          <div class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ order.id | shorten}}</div>
+          <div class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(order.orderDate) }}</div>
+          <div class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">€{{ order.totalAmount?.toFixed(2) }}</div>
+          <div class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" 
+                  [ngClass]="getStatusClass(order.orderStatus)">
+              {{ order.orderStatus }}
             </span>
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          <button (click)="viewOrderDetails(order.id)" class="text-blue-600 hover:text-blue-900">
-            View Details
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+          </div>
+          <div class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">View Details</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

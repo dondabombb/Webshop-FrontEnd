@@ -29,7 +29,7 @@
           <li *ngFor="let item of items" class="px-4 py-4 sm:px-6">
             <div class="flex items-center justify-between">
               <div class="flex items-center">
-                <img [src]="item.product.imagePath" [alt]="item.product.name" class="h-16 w-16 object-cover rounded">
+                <img [src]="item.product.imageUrl" [alt]="item.product.name" class="h-16 w-16 object-cover rounded">
                 <div class="ml-4">
                   <h3 class="text-lg font-medium text-gray-900">{{item.product.name}}</h3>
                   <p class="text-gray-500">{{item.product.description | slice:0:50}}...</p>

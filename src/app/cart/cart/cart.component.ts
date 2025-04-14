@@ -26,8 +26,12 @@ export class CartComponent implements OnInit, OnDestroy {
       })
     );
 
+    this.loadCart();
+  }
+
+  private loadCart(): void {
     this.subscriptions.push(
-      this.cartService.getCart().subscribe({
+      this.cartService.loadCart().subscribe({
         next: (cart) => {
           console.log('Cart updated:', cart);
           this.items = cart.items || [];

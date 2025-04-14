@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {ButtonComponent} from "./button/button.component";
 import {RouterLink} from "@angular/router";
 import {HeaderComponent} from "./header/header.component";
@@ -11,10 +11,11 @@ import {HeaderComponent} from "./header/header.component";
     ButtonComponent,
     HeaderComponent
   ],
-  imports: [
-    CommonModule,
-    RouterLink
-  ],
+    imports: [
+        CommonModule,
+        RouterLink,
+        NgOptimizedImage
+    ],
   exports: [
     ButtonComponent,
     HeaderComponent

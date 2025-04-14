@@ -22,6 +22,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.initializeCart();
+    this.setupSubscriptions();
+  }
+
+  private initializeCart(): void {
+    if (this.authService.isLoggedIn()) {
+      this.reloadCart();
+    }
+  }
+
+  private setupSubscriptions(): void {
     this.subscriptions.push(
       this.cartService.getCartCount().subscribe(count => {
         this.amount = count;
@@ -31,6 +42,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.authService.isLoggedIn$.subscribe(isLoggedIn => {
         this.isLoggedIn = isLoggedIn;
+        if (isLoggedIn) {
+          this.reloadCart();
+        }
       })
     );
 
@@ -38,6 +52,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.authService.isAdmin$.subscribe(isAdmin => {
         this.isAdmin = isAdmin;
       })
+    );
+  }
+
+  public reloadCart(): void {
+    this.subscriptions.push(
+      this.cartService.loadCart().subscribe()
     );
   }
 
