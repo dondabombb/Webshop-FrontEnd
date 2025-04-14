@@ -25,6 +25,11 @@ interface ProductResponse {
   active: boolean;
 }
 
+interface PaymentResponse {
+  id: string;
+  paymentOption: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -109,9 +114,9 @@ export class ApiService {
   }
 
   // Orders
-  async createOrder(shippingAddress: AddressModel, billingAddress: AddressModel): Promise<ApiResponse<OrderModel>> {
+  async createOrder(paymentMethod: string): Promise<ApiResponse<OrderModel>> {
     const authInstance = await this.apiConnector.auth();
-    const response = await authInstance.post('/order', { shippingAddress, billingAddress });
+    const response = await authInstance.post('/order', { paymentMethod });
     return response.data;
   }
 
@@ -173,6 +178,12 @@ export class ApiService {
   async deleteUser(id: string): Promise<ApiResponse<void>> {
     const authInstance = await this.apiConnector.auth();
     const response = await authInstance.delete(`/user/${id}`);
+    return response.data;
+  }
+
+  async getPaymentMethods(): Promise<ApiResponse<PaymentResponse[]>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.get('/payment-methods');
     return response.data;
   }
 }

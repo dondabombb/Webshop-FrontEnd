@@ -1,19 +1,19 @@
- import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {Observable, map, from} from 'rxjs';
 import { ApiService } from './api.service';
 import { OrderModel, OrderStatus } from '../_modals/order.model';
 import { AddressModel } from '../_modals/user.model';
 import { ShoppingCartService } from './shoppingCart.service';
 
- interface ApiResponse<T> {
-   success: boolean;
-   status: string;
-   payload: {
-     result?: T;
-     userRole?: string;
-     JWT?: string;
-   };
- }
+interface ApiResponse<T> {
+  success: boolean;
+  status: string;
+  payload: {
+    result?: T;
+    userRole?: string;
+    JWT?: string;
+  };
+}
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +24,8 @@ export class OrderService {
     private cartService: ShoppingCartService
   ) {}
 
-  createOrder(shippingAddress: AddressModel, billingAddress: AddressModel): Observable<OrderModel> {
-    return from(this.apiService.createOrder(shippingAddress, billingAddress)).pipe(
+  createOrder(paymentMethod: string): Observable<OrderModel> {
+    return from(this.apiService.createOrder(paymentMethod)).pipe(
       map((response: ApiResponse<OrderModel>) => {
         if (response.payload.result) {
           // Clear the cart after successful order

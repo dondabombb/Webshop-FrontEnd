@@ -5,11 +5,11 @@
     <!-- Payment Method Selection -->
     <div>
       <h3 class="text-xl font-semibold mb-4 text-gray-700">Betaalmethode</h3>
-      <select [(ngModel)]="selectedPaymentMethod" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <option value="" disabled selected>Kies een betaalmethode</option>
-        <option value="paypal">Paypal</option>
-        <option value="credit">Creditcard</option>
-        <option value="ideal">iDEAL</option>
+      <select [(ngModel)]="selectedPaymentMethod" class="w-full p-2 border rounded-md">
+        <option value="">Select a payment method</option>
+        <option *ngFor="let method of paymentMethods">
+          {{ method.paymentOption }}
+        </option>
       </select>
     </div>
 

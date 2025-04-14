@@ -5,6 +5,13 @@ import { UserService } from '../../_service/user.service';
 import { AddressModel, UserModel } from '../../_modals/user.model';
 import {ShoppingCartService} from "../../_service/shoppingCart.service";
 import {CartItemModel} from "../../_modals/cart.model";
+import { OrderService } from '../../_service/order.service';
+import { PaymentService } from '../../_service/payment.service';
+
+export interface PaymentMethod {
+  id: string;
+  paymentOption: string;
+}
 
 @Component({
   selector: 'app-payment',
@@ -19,16 +26,32 @@ export class PaymentComponent implements OnInit {
   success: string | null = null;
   error: string | null = null;
   user: UserModel | null = null;
+  paymentMethods: PaymentMethod[] = [];  // Change type to PaymentMethod[]
 
   constructor(
     private cartService: ShoppingCartService,
     private userService: UserService,
+    private orderService: OrderService,
+    private paymentService: PaymentService,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.loadCartItems();
     this.loadUserData();
+    this.loadPaymentMethods();
+  }
+
+  loadPaymentMethods() {
+    this.paymentService.getPaymentMethods().subscribe({
+      next: (methods: PaymentMethod[]) => {  // Add type annotation
+        this.paymentMethods = methods;
+      },
+      error: (error) => {
+        console.error('Error loading payment methods:', error);
+        this.error = 'Failed to load payment methods. Please try again.';
+      }
+    });
   }
 
   loadCartItems() {
@@ -56,16 +79,26 @@ export class PaymentComponent implements OnInit {
     }
   }
 
+  // Update the processPayment method to use the payment ID
   processPayment() {
     if (!this.selectedPaymentMethod) {
       this.error = 'Please select a payment method.';
       return;
     }
 
-    this.success = 'Payment processed successfully!';
-    this.cartService.clearCart();
-    setTimeout(() => {
-      this.router.navigate(['/']);
-    }, 2000);
+    // Create order with payment method
+    this.orderService.createOrder(this.selectedPaymentMethod).subscribe({
+      next: (order) => {
+        this.success = 'Order placed successfully!';
+        this.cartService.clearCart();
+        setTimeout(() => {
+          this.router.navigate(['/']);
+        }, 2000);
+      },
+      error: (error) => {
+        console.error('Error creating order:', error);
+        this.error = 'Failed to place order. Please try again.';
+      }
+    });
   }
 }
