@@ -26,6 +26,7 @@ export class OrderModel {
     public status?: OrderStatus,
     public shippingAddress?: AddressModel,
     public billingAddress?: AddressModel,
-    public createdAt?: Date
+    public createdAt?: Date,
+    public paymentMethod?: String
   ) {}
-} 
+}
