@@ -106,12 +106,24 @@ export class LoginScreenComponent {
 
     from(this.authService.register(user)).subscribe({
       next: () => {
+        // After successful registration, attempt to login
+        if (formValues.email && formValues.password) {
+          this.authService.login(formValues.email, formValues.password).subscribe({
+            next: (response) => {
+              if (response && response.success) {
+                this.cartService.syncLocalCartWithServer().subscribe(() => {
+                  this.router.navigate(['/']);
+                });
+              } else {
+                this.error = response?.payload?.result || "Login failed after registration.";
+              }
+            },
+            error: (error) => {
+              this.error = error.error?.message || "Login failed after registration.";
+            }
+          });
+        }
         this.isLoading = false;
-        this.showRegisterForm = false;
-        this.error = null;
-        // Show success message or automatically log in
-        this.loginForm.controls.email.setValue(formValues.email || '');
-        this.loginForm.controls.password.setValue(formValues.password || '');
       },
       error: (error) => {
         this.isLoading = false;

@@ -3,7 +3,6 @@ import {BehaviorSubject, from, Observable, tap} from 'rxjs';
 import { ApiService } from './api.service';
 import { UserModel } from '../_modals/user.model';
 import {ApiConnectorService} from "./apiConnector.service";
-import {ShoppingCartService} from "./shoppingCart.service";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -38,13 +37,21 @@ export class AuthService {
 
   private checkAuthStatus(): void {
     const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem('currentUser'); // Changed from 'user' to 'currentUser'
 
     if (token && userData) {
-      const user = JSON.parse(userData) as UserModel;
-      this.currentUserSubject.next(user);
-      this.isLoggedInSubject.next(true);
-      this.isAdminSubject.next(user.role === 'ADMIN');
+      try {
+        const user = JSON.parse(userData) as UserModel;
+        this.currentUserSubject.next(user);
+        this.isLoggedInSubject.next(true);
+        this.isAdminSubject.next(user.role === 'ADMIN');
+      } catch (error) {
+        // If there's an error parsing the user data, clear everything
+        this.logout();
+      }
+    } else {
+      // If either token or user data is missing, clear everything
+      this.logout();
     }
   }
 
@@ -99,9 +106,5 @@ export class AuthService {
 
   isAdmin(): boolean {
     return this.isAdminSubject.value;
-  }
-
-  getCurrentUserId() {
-    return this.currentUserSubject.value?.id;
   }
 }

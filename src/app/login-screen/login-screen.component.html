@@ -20,7 +20,7 @@
             <div *ngIf="error" class="error-message text-red-500 mt-2">{{ error }}</div>
           </form>
           <article class="formactions">
-            <app-button class="actionsubmit" [disabled]="!loginForm.valid || isLoading" styles="main" (onClick)="onLogin()">
+            <app-button class="actionsubmit text-white" [disabled]="!loginForm.valid || isLoading" styles="secondary" (onClick)="onLogin()">
               {{ isLoading ? 'Logging in...' : 'Login' }}
             </app-button>
             <p class="mt-4 text-center">
@@ -63,7 +63,7 @@
             <div *ngIf="error" class="error-message text-red-500 mt-2">{{ error }}</div>
           </form>
           <article class="formactions">
-            <app-button class="actionsubmit" [disabled]="!registerForm.valid || isLoading" styles="main" (onClick)="onRegister()">
+            <app-button class="actionsubmit text-white" [disabled]="!registerForm.valid || isLoading" styles="secondary" (onClick)="onRegister()">
               {{ isLoading ? 'Registering...' : 'Register' }}
             </app-button>
             <p class="mt-4 text-center">

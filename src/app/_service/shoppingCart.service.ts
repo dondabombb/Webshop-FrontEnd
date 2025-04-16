@@ -28,15 +28,21 @@ export class ShoppingCartService{
     private apiService: ApiService,
     private authService: AuthService
   ) {
+    // Modified subscription to handle both login and logout cases
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       if (isLoggedIn) {
         this.loadCart();
       } else {
-        this.loadFromLocalStorage();
+        // Clear cart when logged out or on page reload when not authenticated
+        this.cart = new CartModel();
+        this.updateCartState();
+        localStorage.removeItem('cart');
+        this.cartSubject.next(this.cart);
+        this.count.next(0);
       }
     });
   }
-
+  
   // Change from private to public
   public loadCart(): Observable<CartModel> {
     if (this.authService.isLoggedIn()) {
@@ -132,29 +138,6 @@ export class ShoppingCartService{
       } catch (error) {
         console.error('Error merging cart with localStorage:', error);
       }
-    }
-  }
-
-  private syncCartToBackend(): void {
-    if (this.authService.isLoggedIn() && this.cart.id && this.cart.items.length > 0) {
-      from(this.apiService.clearCart()).pipe(
-        switchMap(() => {
-          const addItemObservables = this.cart.items.map(item =>
-            this.apiService.addProductToCart(this.cart.id!, item.product.id, item.quantity)
-          );
-          return from(addItemObservables[addItemObservables.length - 1] || of(null));
-        })
-      ).subscribe({
-        next: (response: ApiResponse<CartModel> | null) => {
-          if (response?.payload.result) {
-            this.cart = response.payload.result;
-            this.updateCartState();
-          }
-        },
-        error: (error) => {
-          console.error('Error syncing cart to backend:', error);
-        }
-      });
     }
   }
 
@@ -301,40 +284,50 @@ export class ShoppingCartService{
       return from(this.apiService.removeProductFromCart(this.cart.id, productId)).pipe(
         map((response: ApiResponse<CartModel>) => {
           if (response.payload.result) {
-            // The issue is here - we need to properly map the result to CartModel
             this.cart = this.mapToCartModel(response.payload.result);
             this.updateCartState();
             return this.cart;
           }
           throw new Error('Invalid response format');
+        }),
+        catchError(error => {
+          console.error('Error removing item:', error);
+          // Remove item locally if API call fails
+          this.cart.items = this.cart.items.filter(item => item.product.id !== productId);
+          this.updateCartState();
+          return of(this.cart);
         })
       );
     } else {
-      this.cart.items = this.cart.items.filter(item => item.product.id !== productId);
-      this.updateCartState();
-      this.cartSubject.next(this.cart);
+      // For logged-out users, only remove the specific item
+      const itemIndex = this.cart.items.findIndex(item => item.product.id === productId);
+      if (itemIndex !== -1) {
+        this.cart.items.splice(itemIndex, 1);
+        this.updateCartState();
+      }
       return of(this.cart);
     }
   }
 
   public clearCart(): Observable<CartModel> {
+    this.cart = new CartModel();
+    this.updateCartState();
+    localStorage.removeItem('cart');
+    
     if (this.authService.isLoggedIn()) {
       return from(this.apiService.getCart()).pipe(
         map((response: ApiResponse<CartModel>) => {
           if (response.payload.result) {
             this.cart = this.mapToCartModel(response.payload.result);
             this.updateCartState();
-            localStorage.removeItem('cart');
             return this.cart;
           }
           throw new Error('Invalid response format');
         })
       );
-    } else {
-      this.cart = new CartModel();
-      this.updateCartState();
-      return of(this.cart);
     }
+    
+    return of(this.cart);
   }
 
   public getCartTotal(): number {

@@ -66,7 +66,7 @@ export class AddressComponent implements OnInit {
     this.success = 'Address updated successfully. Redirecting to payment...';
     setTimeout(() => {
       this.router.navigate(['/cart/payment']);
-    }, 2000);
+    });
   }
 
   private handleError = (error: any) => {
