@@ -45,13 +45,10 @@ export class ItemsService {
 
   public getAll(): Observable<ItemModel[]> {
     console.log('Getting all items...');
-    // Return cached items if available
-    if (this.itemCache.length > 0) {
-      console.log('Returning cached items:', this.itemCache);
-      return of([...this.itemCache]);
-    }
+    // Clear cache to ensure fresh data
+    this.itemCache = [];
 
-    // Otherwise fetch from API
+    // Fetch from API
     return from(this.apiService.getAllProducts()).pipe(
       tap(response => {
         console.log('Raw API response:', response);
@@ -99,15 +96,19 @@ export class ItemsService {
     );
   }
 
-  public addItem(item: ItemModel): Observable<ItemModel> {
+  public addItem(item: any): Observable<ItemModel> {
+    console.log('Sending to API:', item);
+    
     return from(this.apiService.createProduct(item)).pipe(
       map((response: ApiResponse<ProductResponse>) => {
+        console.log('Create response:', response);
         if (response.payload.result) {
           return this.mapToItemModel(response.payload.result);
         }
         throw new Error('Invalid response format');
       }),
       tap(newItem => {
+        console.log('New item created:', newItem);
         this.itemCache = [...this.itemCache, newItem];
         this.itemsChanged.emit([...this.itemCache]);
       }),
@@ -119,14 +120,26 @@ export class ItemsService {
   }
 
   public updateItem(id: string, updatedItem: Partial<ItemModel>): Observable<ItemModel> {
-    return from(this.apiService.updateProduct(id, updatedItem)).pipe(
+    // Transform the item to match API expectations
+    const productData = {
+      name: updatedItem.name,
+      description: updatedItem.description,
+      price: Number(updatedItem.price),
+      imageUrl: updatedItem.imageUrl || (updatedItem as any).imagePath
+    };
+  
+    console.log('Updating product with data:', productData);
+  
+    return from(this.apiService.updateProduct(id, productData)).pipe(
       map((response: ApiResponse<ProductResponse>) => {
+        console.log('Update response:', response);
         if (response.payload.result) {
           return this.mapToItemModel(response.payload.result);
         }
         throw new Error('Invalid response format');
       }),
       tap(updated => {
+        console.log('Updated item:', updated);
         const index = this.itemCache.findIndex(item => item.id === id);
         if (index !== -1) {
           this.itemCache = [
