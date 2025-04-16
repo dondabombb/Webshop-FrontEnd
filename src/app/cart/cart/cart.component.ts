@@ -5,6 +5,7 @@ import {CartItemModel} from "../../_modals/cart.model";
 import {Router} from "@angular/router";
 import { AddressModel } from "../../_modals/user.model";
 import { Subscription } from 'rxjs';
+import { AuthService } from '../../_service/auth.service';
 
 @Component({
   selector: 'app-cart',
@@ -17,7 +18,11 @@ export class CartComponent implements OnInit, OnDestroy {
   isLoading = true;
   private subscriptions: Subscription[] = [];
 
-  constructor(private cartService: ShoppingCartService, private router: Router) {}
+  constructor(
+    private cartService: ShoppingCartService, 
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -34,11 +39,21 @@ export class CartComponent implements OnInit, OnDestroy {
       this.cartService.loadCart().subscribe({
         next: (cart) => {
           console.log('Cart updated:', cart);
-          this.items = cart.items || [];
+          if (this.authService.isLoggedIn()) {
+            // For authenticated users, filter out invalid items
+            this.items = (cart.items || []).filter(item => item.product && item.product.id);
+          } else {
+            // For unauthenticated users, take all items from local storage
+            this.items = cart.items || [];
+          }
           this.total = this.cartService.getCartTotal();
+          this.isLoading = false;
         },
         error: (error) => {
           console.error('Error loading cart:', error);
+          this.items = [];
+          this.total = 0;
+          this.isLoading = false;
         }
       })
     );
@@ -50,7 +65,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
   updateQuantity(productId: string, quantity: number): void {
     if (quantity < 1) return;
-    
+
     this.subscriptions.push(
       this.cartService.updateQuantity(productId, quantity).subscribe({
         next: (cart) => {
@@ -78,21 +93,11 @@ export class CartComponent implements OnInit, OnDestroy {
     );
   }
 
-  clearCart(): void {
-    this.subscriptions.push(
-      this.cartService.clearCart().subscribe({
-        next: (cart) => {
-          this.items = cart.items || [];
-          this.total = this.cartService.getCartTotal();
-        },
-        error: (error) => {
-          console.error('Error clearing cart:', error);
-        }
-      })
-    );
-  }
-
   goToAddress(): void {
     this.router.navigate(['/cart/address']);
+  }
+
+  goHome() {
+    this.router.navigate(['/'])
   }
 }

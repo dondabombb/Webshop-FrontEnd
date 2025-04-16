@@ -1,8 +1,23 @@
-<button (click)="navigateToDetail()">
-  <section class="border border-solid border-black rounded-md p-3">
-    <img class="rounded mx-auto h-36 w-36 object-contain" [src]="item.imageUrl" alt="tennisbal">
-    <h4 class="font-bold pl-1">{{item.name}}</h4>
-    <p class="font-thin pl-1">{{item.price | currency:'EUR'}}</p>
-    <p class="font-thin pl-1">{{item.description | shorten}}</p>
+<button (click)="navigateToDetail()" class="w-full">
+  <section class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div class="p-4">
+      <div class="bg-gray-50 flex items-center justify-center p-4 rounded-lg">
+        <img 
+          class="h-36 w-36 object-contain"
+          [src]="item.imageUrl" 
+          [alt]="item.name"
+          onerror="this.src='assets/placeholder.png'"
+        >
+      </div>
+      
+      <div class="mt-4">
+        <h4 class="text-xl font-bold text-gray-900">{{item.name}}</h4>
+        <div class="mt-2">
+          <span class="text-lg font-bold text-gray-900">{{item.price | currency:'EUR'}}</span>
+          <span class="ml-2 text-sm text-gray-500">Including VAT</span>
+        </div>
+        <p class="mt-2 text-gray-600 line-clamp-2">{{item.description | shorten}}</p>
+      </div>
+    </div>
   </section>
 </button>

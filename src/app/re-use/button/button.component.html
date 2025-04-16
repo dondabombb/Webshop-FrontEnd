@@ -1,7 +1,11 @@
-<a *ngIf="path" [routerLink]="path" class="button" [ngClass]="styles">
-  <ng-container *ngTemplateOutlet="tempOutlet" ></ng-container>
-</a>
-<button *ngIf="!path" [type]="type" class="button" [attr.form]="formId" [ngClass]="styles" (click)="onClickButton()" [disabled]="disabled">
+<button *ngIf="!path" [type]="type" class="block w-full py-3 px-4 rounded-md cursor-pointer text-sm no-underline disabled:opacity-50 disabled:pointer-events-none"
+   [ngClass]="{
+     'bg-white text-white border border-transparent hover:border-[#E5E6E7] transition-colors': styles === 'basic',
+     'bg-[#007d30] text-white border border-[#007d30] hover:bg-[#006a29]': styles === 'main',
+     'bg-indigo-600 text-white border border-indigo-600 hover:bg-indigo-700 !important': styles === 'secondary',
+     'bg-[#DC4C64] text-white border border-[#DC4C64] hover:bg-[#d13a55]': styles === 'danger'
+   }"
+   [attr.form]="formId" (click)="onClickButton()" [disabled]="disabled">
   <ng-container *ngTemplateOutlet="tempOutlet"></ng-container>
 </button>
 <ng-template #tempOutlet>

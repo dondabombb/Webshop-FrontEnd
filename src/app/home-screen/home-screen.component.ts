@@ -17,33 +17,22 @@ export class HomeScreenComponent implements OnInit {
   constructor(
     private router: Router, 
     private itemservice: ItemsService
-  ) {
-    console.log('HomeScreenComponent initialized');
-  }
+  ) {}
 
   public ngOnInit(): void {
-    console.log('HomeScreenComponent ngOnInit called');
     this.loadAllItems();
   }
 
   private loadAllItems(): void {
-    console.log('Loading all items...');
     this.isLoading = true;
     this.error = null;
     
     this.itemservice.getAll().subscribe({
       next: (items: ItemModel[]) => {
-        console.log('Successfully loaded items:', items);
         this.items = items;
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error details:', {
-          status: error.status,
-          statusText: error.statusText,
-          error: error.error,
-          message: error.message
-        });
         this.error = `Failed to load products: ${error.statusText || error.message}`;
         this.isLoading = false;
       }

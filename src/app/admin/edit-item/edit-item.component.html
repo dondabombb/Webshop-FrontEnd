@@ -50,12 +50,8 @@
     </div>
 
     <div class="flex justify-between">
-      <button type="submit" [disabled]="!itemForm.valid" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-        Update Item
-      </button>
-      <button type="button" (click)="onCancel()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-        Cancel
-      </button>
+      <app-button class="text-white" styles="secondary" [disabled]="!itemForm.valid" (onClick)="onSubmit()">Update Item</app-button>
+      <app-button styles="basic" (onClick)="onCancel()">Cancel</app-button>
     </div>
   </form>
 </div>

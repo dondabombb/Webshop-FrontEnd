@@ -44,31 +44,22 @@ export class ItemsService {
   }
 
   public getAll(): Observable<ItemModel[]> {
-    console.log('Getting all items...');
-    // Clear cache to ensure fresh data
-    this.itemCache = [];
+    if (this.itemCache.length > 0) {
+      return of([...this.itemCache]);
+    }
 
-    // Fetch from API
     return from(this.apiService.getAllProducts()).pipe(
-      tap(response => {
-        console.log('Raw API response:', response);
-      }),
       map((response: ApiResponse<ProductResponse[]>) => {
-        console.log('Processing API response:', response);
         if (response.payload.result) {
-          console.log('Found items in response:', response.payload.result);
           return response.payload.result.map(item => this.mapToItemModel(item));
         }
-        console.log('No items found in response');
         return [];
       }),
       tap(items => {
-        console.log('Mapped items:', items);
         this.itemCache = items;
         this.itemsChanged.emit([...this.itemCache]);
       }),
-      catchError(error => {
-        console.error('Error fetching products:', error);
+      catchError(() => {
         return of([]);
       })
     );

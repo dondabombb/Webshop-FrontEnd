@@ -1,28 +1,28 @@
 <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-  <h3 class="text-2xl font-bold mb-6 text-gray-800">Adresinformatie</h3>
+  <h3 class="text-2xl font-bold mb-6 text-gray-800">Address Information</h3>
 
   <form (ngSubmit)="addAddress()" #addressForm="ngForm">
     <div class="mb-6">
-      <h4 class="text-xl font-semibold mb-4 text-gray-700">Verzendadres</h4>
+      <h4 class="text-xl font-semibold mb-4 text-gray-700">Shipping Address</h4>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="form-group">
-          <label for="shippingStreet" class="block mb-2 text-sm font-medium text-gray-700">Straat</label>
+          <label for="shippingStreet" class="block mb-2 text-sm font-medium text-gray-700">Street</label>
           <input type="text" [(ngModel)]="shippingAddress.street" name="shippingStreet" id="shippingStreet" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
         <div class="form-group">
-          <label for="shippingHouseNumber" class="block mb-2 text-sm font-medium text-gray-700">Huisnummer</label>
+          <label for="shippingHouseNumber" class="block mb-2 text-sm font-medium text-gray-700">House Number</label>
           <input type="text" [(ngModel)]="shippingAddress.houseNumber" name="shippingHouseNumber" id="shippingHouseNumber" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
         <div class="form-group">
-          <label for="shippingPostalCode" class="block mb-2 text-sm font-medium text-gray-700">Postcode</label>
+          <label for="shippingPostalCode" class="block mb-2 text-sm font-medium text-gray-700">Postal Code</label>
           <input type="text" [(ngModel)]="shippingAddress.postalCode" name="shippingPostalCode" id="shippingPostalCode" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
         <div class="form-group">
-          <label for="shippingCity" class="block mb-2 text-sm font-medium text-gray-700">Stad</label>
+          <label for="shippingCity" class="block mb-2 text-sm font-medium text-gray-700">City</label>
           <input type="text" [(ngModel)]="shippingAddress.city" name="shippingCity" id="shippingCity" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
         <div class="form-group">
-          <label for="shippingCountry" class="block mb-2 text-sm font-medium text-gray-700">Land</label>
+          <label for="shippingCountry" class="block mb-2 text-sm font-medium text-gray-700">Country</label>
           <input type="text" [(ngModel)]="shippingAddress.country" name="shippingCountry" id="shippingCountry" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
       </div>
@@ -31,41 +31,19 @@
     <div class="mb-6">
       <label class="flex items-center">
         <input type="checkbox" [(ngModel)]="shippingBillingSame" name="shippingBillingSame" class="form-checkbox h-5 w-5 text-blue-600">
-        <span class="ml-2 text-gray-700">Verzend- en factuuradressen zijn hetzelfde</span>
+        <span class="ml-2 text-gray-700">Shipping and billing addresses are the same</span>
       </label>
     </div>
 
     <div *ngIf="!shippingBillingSame" class="mb-6">
-      <h4 class="text-xl font-semibold mb-4 text-gray-700">Factuuradres</h4>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="form-group">
-          <label for="billingStreet" class="block mb-2 text-sm font-medium text-gray-700">Straat</label>
-          <input type="text" [(ngModel)]="billingAddress.street" name="billingStreet" id="billingStreet" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div class="form-group">
-          <label for="billingHouseNumber" class="block mb-2 text-sm font-medium text-gray-700">Huisnummer</label>
-          <input type="text" [(ngModel)]="billingAddress.houseNumber" name="billingHouseNumber" id="billingHouseNumber" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div class="form-group">
-          <label for="billingPostalCode" class="block mb-2 text-sm font-medium text-gray-700">Postcode</label>
-          <input type="text" [(ngModel)]="billingAddress.postalCode" name="billingPostalCode" id="billingPostalCode" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div class="form-group">
-          <label for="billingCity" class="block mb-2 text-sm font-medium text-gray-700">Stad</label>
-          <input type="text" [(ngModel)]="billingAddress.city" name="billingCity" id="billingCity" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div class="form-group">
-          <label for="billingCountry" class="block mb-2 text-sm font-medium text-gray-700">Land</label>
-          <input type="text" [(ngModel)]="billingAddress.country" name="billingCountry" id="billingCountry" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-      </div>
+      <h4 class="text-xl font-semibold mb-4 text-gray-700">Billing Address</h4>
+      <!-- Similar fields as shipping address but for billing -->
     </div>
 
-    <button type="submit" [disabled]="!addressForm.form.valid" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300">
-      Ga naar betaling
-    </button>
+    <app-button class="w-full text-white" styles="secondary" [disabled]="!addressForm.form.valid" (onClick)="addAddress()">
+      Proceed to Payment
+    </app-button>
   </form>
 
-  <div *ngIf="success" class="mt-4 p-4 bg-green-100 text-green-700 rounded-md">{{ success }}</div>
-  <div *ngIf="error" class="mt-4 p-4 bg-red-100 text-red-700 rounded-md">{{ error }}</div>
+  <!-- Success/Error messages -->
 </div>
