@@ -38,19 +38,15 @@ export class CartComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.cartService.loadCart().subscribe({
         next: (cart) => {
-          console.log('Cart updated:', cart);
           if (this.authService.isLoggedIn()) {
-            // For authenticated users, filter out invalid items
             this.items = (cart.items || []).filter(item => item.product && item.product.id);
           } else {
-            // For unauthenticated users, take all items from local storage
             this.items = cart.items || [];
           }
           this.total = this.cartService.getCartTotal();
           this.isLoading = false;
         },
-        error: (error) => {
-          console.error('Error loading cart:', error);
+        error: () => {
           this.items = [];
           this.total = 0;
           this.isLoading = false;
@@ -72,8 +68,8 @@ export class CartComponent implements OnInit, OnDestroy {
           this.items = cart.items || [];
           this.total = this.cartService.getCartTotal();
         },
-        error: (error) => {
-          console.error('Error updating quantity:', error);
+        error: () => {
+          // Error handling remains without logging
         }
       })
     );
@@ -86,8 +82,8 @@ export class CartComponent implements OnInit, OnDestroy {
           this.items = cart.items || [];
           this.total = this.cartService.getCartTotal();
         },
-        error: (error) => {
-          console.error('Error removing item:', error);
+        error: () => {
+          // Error handling remains without logging
         }
       })
     );

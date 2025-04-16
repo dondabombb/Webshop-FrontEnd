@@ -37,7 +37,28 @@
 
     <div *ngIf="!shippingBillingSame" class="mb-6">
       <h4 class="text-xl font-semibold mb-4 text-gray-700">Billing Address</h4>
-      <!-- Similar fields as shipping address but for billing -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group">
+          <label for="billingStreet" class="block mb-2 text-sm font-medium text-gray-700">Street</label>
+          <input type="text" [(ngModel)]="billingAddress.street" name="billingStreet" id="billingStreet" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="form-group">
+          <label for="billingHouseNumber" class="block mb-2 text-sm font-medium text-gray-700">House Number</label>
+          <input type="text" [(ngModel)]="billingAddress.houseNumber" name="billingHouseNumber" id="billingHouseNumber" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="form-group">
+          <label for="billingPostalCode" class="block mb-2 text-sm font-medium text-gray-700">Postal Code</label>
+          <input type="text" [(ngModel)]="billingAddress.postalCode" name="billingPostalCode" id="billingPostalCode" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="form-group">
+          <label for="billingCity" class="block mb-2 text-sm font-medium text-gray-700">City</label>
+          <input type="text" [(ngModel)]="billingAddress.city" name="billingCity" id="billingCity" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="form-group">
+          <label for="billingCountry" class="block mb-2 text-sm font-medium text-gray-700">Country</label>
+          <input type="text" [(ngModel)]="billingAddress.country" name="billingCountry" id="billingCountry" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
     </div>
 
     <app-button class="w-full text-white" styles="secondary" [disabled]="!addressForm.form.valid" (onClick)="addAddress()">
@@ -45,5 +66,4 @@
     </app-button>
   </form>
 
-  <!-- Success/Error messages -->
 </div>

@@ -44,10 +44,9 @@ export class OrderComponent implements OnInit {
         this.orders = orders;
         this.isLoading = false;
       },
-      error: (error) => {
+      error: () => {
         this.error = 'Failed to load orders. Please try again.';
         this.isLoading = false;
-        console.error('Error loading orders:', error);
       }
     });
   }

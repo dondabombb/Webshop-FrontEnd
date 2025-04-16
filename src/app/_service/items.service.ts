@@ -33,7 +33,6 @@ export class ItemsService {
   constructor(private apiService: ApiService) {}
 
   private mapToItemModel(item: ProductResponse): ItemModel {
-    console.log('Mapping product response to ItemModel:', item);
     return new ItemModel(
       item.id,
       item.name,
@@ -66,13 +65,11 @@ export class ItemsService {
   }
 
   public getOne(id: string): Observable<ItemModel | undefined> {
-    // Check cache first
     const cachedItem = this.itemCache.find(item => item.id === id);
     if (cachedItem) {
       return of(cachedItem);
     }
 
-    // Otherwise fetch from API
     return from(this.apiService.getProductById(id)).pipe(
       map((response: ApiResponse<ProductResponse>) => {
         if (response.payload.result) {
@@ -80,57 +77,44 @@ export class ItemsService {
         }
         return undefined;
       }),
-      catchError(error => {
-        console.error(`Error fetching product with id ${id}:`, error);
-        return of(undefined);
-      })
+      catchError(() => of(undefined))
     );
   }
 
   public addItem(item: any): Observable<ItemModel> {
-    console.log('Sending to API:', item);
-    
     return from(this.apiService.createProduct(item)).pipe(
       map((response: ApiResponse<ProductResponse>) => {
-        console.log('Create response:', response);
         if (response.payload.result) {
           return this.mapToItemModel(response.payload.result);
         }
         throw new Error('Invalid response format');
       }),
       tap(newItem => {
-        console.log('New item created:', newItem);
         this.itemCache = [...this.itemCache, newItem];
         this.itemsChanged.emit([...this.itemCache]);
       }),
       catchError(error => {
-        console.error('Error adding product:', error);
         throw error;
       })
     );
   }
 
   public updateItem(id: string, updatedItem: Partial<ItemModel>): Observable<ItemModel> {
-    // Transform the item to match API expectations
     const productData = {
       name: updatedItem.name,
       description: updatedItem.description,
       price: Number(updatedItem.price),
       imageUrl: updatedItem.imageUrl || (updatedItem as any).imagePath
     };
-  
-    console.log('Updating product with data:', productData);
-  
+
     return from(this.apiService.updateProduct(id, productData)).pipe(
       map((response: ApiResponse<ProductResponse>) => {
-        console.log('Update response:', response);
         if (response.payload.result) {
           return this.mapToItemModel(response.payload.result);
         }
         throw new Error('Invalid response format');
       }),
       tap(updated => {
-        console.log('Updated item:', updated);
         const index = this.itemCache.findIndex(item => item.id === id);
         if (index !== -1) {
           this.itemCache = [
@@ -142,7 +126,6 @@ export class ItemsService {
         }
       }),
       catchError(error => {
-        console.error(`Error updating product with id ${id}:`, error);
         throw error;
       })
     );
@@ -155,10 +138,7 @@ export class ItemsService {
         this.itemsChanged.emit([...this.itemCache]);
         return true;
       }),
-      catchError(error => {
-        console.error(`Error deleting product with id ${id}:`, error);
-        return of(false);
-      })
+      catchError(() => of(false))
     );
   }
 

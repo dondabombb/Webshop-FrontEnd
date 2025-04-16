@@ -44,11 +44,10 @@ export class PaymentComponent implements OnInit {
 
   loadPaymentMethods() {
     this.paymentService.getPaymentMethods().subscribe({
-      next: (methods: PaymentMethod[]) => {  // Add type annotation
+      next: (methods: PaymentMethod[]) => {
         this.paymentMethods = methods;
       },
-      error: (error) => {
-        console.error('Error loading payment methods:', error);
+      error: () => {
         this.error = 'Failed to load payment methods. Please try again.';
       }
     });
@@ -70,8 +69,7 @@ export class PaymentComponent implements OnInit {
           next: (user: UserModel) => {
             this.shippingAddress = user.shippingAddress || new AddressModel();
           },
-          error: (error) => {
-            console.error('Error loading user data:', error);
+          error: () => {
             this.error = 'Failed to load user data. Please try again.';
           }
         });
@@ -86,7 +84,6 @@ export class PaymentComponent implements OnInit {
       return;
     }
 
-    // Create order with payment method
     this.orderService.createOrder(this.selectedPaymentMethod).subscribe({
       next: (order) => {
         this.success = 'Order placed successfully!';
@@ -95,8 +92,7 @@ export class PaymentComponent implements OnInit {
           this.router.navigate(['/']);
         }, 2000);
       },
-      error: (error) => {
-        console.error('Error creating order:', error);
+      error: () => {
         this.error = 'Failed to place order. Please try again.';
       }
     });

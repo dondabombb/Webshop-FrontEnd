@@ -21,7 +21,6 @@ export class OrderDetailComponent implements OnInit {
 
   constructor(
     private route: Router,
-    private activatedRoute: ActivatedRoute,  // Add this
     private orderService: OrderService,
     private authService: AuthService
   ) {}
@@ -35,8 +34,6 @@ export class OrderDetailComponent implements OnInit {
       if (this.receivedData?.items) {
         this.receivedData.items.forEach(item => {
           if (item.product) {
-            console.log('Product:', item.product);
-            // Use imageUrl if available, otherwise fallback to placeholder
             item.product = Object.assign({}, item.product, {
               ...item.product,
               imagePath: item.product.imageUrl || 'assets/placeholder.png'
@@ -52,7 +49,6 @@ export class OrderDetailComponent implements OnInit {
     }
   }
 
-  // Update other methods to use receivedData instead of order
   updateOrderStatus(): void {
     if (!this.receivedData || !this.receivedData.id || !this.selectedStatus || this.selectedStatus === this.receivedData.orderStatus) {
       return;
@@ -65,10 +61,9 @@ export class OrderDetailComponent implements OnInit {
         this.receivedData = updatedOrder;
         this.isUpdatingStatus = false;
       },
-      error: (error) => {
+      error: () => {
         this.error = 'Failed to update order status. Please try again.';
         this.isUpdatingStatus = false;
-        console.error('Error updating order status:', error);
       }
     });
   }

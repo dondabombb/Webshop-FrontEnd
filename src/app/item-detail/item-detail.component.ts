@@ -37,10 +37,9 @@ export class ItemDetailComponent implements OnInit{
           }
           this.isLoading = false;
         },
-        error: (error) => {
+        error: () => {
           this.error = 'Failed to load product details';
           this.isLoading = false;
-          console.error('Error loading product:', error);
         }
       });
     });
@@ -60,15 +59,7 @@ export class ItemDetailComponent implements OnInit{
 
   onSubmit(): void {
     if (this.receivedData) {
-      this.cartService.addToCart(this.receivedData, this.quantity).subscribe({
-        next: (cart) => {
-          // Cart was successfully updated
-          console.log('Item added to cart:', cart);
-        },
-        error: (error) => {
-          console.error('Error adding item to cart:', error);
-        }
-      });
+      this.cartService.addToCart(this.receivedData, this.quantity).subscribe();
     }
   }
 }
