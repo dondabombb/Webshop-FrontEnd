@@ -1,5 +1,5 @@
 import {RouterModule, Routes} from '@angular/router';
-import {AfterRenderPhase, NgModule} from "@angular/core";
+import {NgModule} from "@angular/core";
 import {HomeScreenComponent} from "./home-screen/home-screen.component";
 import {LoginScreenComponent} from "./login-screen/login-screen.component";
 import {ItemDetailComponent} from "./item-detail/item-detail.component";
@@ -24,7 +24,7 @@ export const routes: Routes = [
   {path: 'admin/edit/:id', component: EditItemComponent, canActivate: [AuthGuard, AdminGuard]},
   {path: 'admin/payments/create', component: CreatePaymentComponent, canActivate: [AuthGuard, AdminGuard]},
   {path: 'admin/payments/edit/:id', component: EditPaymentComponent, canActivate: [AuthGuard, AdminGuard]},
-  
+
   // Other routes
   {path: '', component: HomeScreenComponent},
   {path:'l', component: LoginScreenComponent},
@@ -34,7 +34,7 @@ export const routes: Routes = [
   {path: 'account', component: AccountComponent, canActivate: [AuthGuard]},
   {path: 'cart/address', component: AddressComponent},
   {path: 'cart/payment', component: PaymentComponent},
-  
+
   // This wildcard route should come last
   {path:':id', component: ItemDetailComponent},
 ];

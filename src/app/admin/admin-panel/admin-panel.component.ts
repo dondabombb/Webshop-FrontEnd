@@ -23,7 +23,7 @@ export class AdminPanelComponent implements OnInit {
   productNotFound = false;
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private itemService: ItemsService,
     private paymentService: PaymentService,
   ) { }
@@ -75,16 +75,16 @@ export class AdminPanelComponent implements OnInit {
   hasPaymentMethods(): boolean {
     return this.paymentMethods.length > 0;
   }
-  
+
   dismissError() {
     this.productNotFound = false;
   }
-  
+
   private loadAllItems() {
     this.loading = true;
     this.error = false;
     this.productNotFound = false;
-    
+
     this.itemService.getAll().subscribe({
       next: (items: ItemModel[]) => {
         this.items = items;
@@ -103,15 +103,7 @@ export class AdminPanelComponent implements OnInit {
 
   navigateToEdit(item: ItemModel) {
     try {
-      if (!item) {
-        throw new Error('Item is undefined or null');
-      }
-      
       const itemId = item.id;
-      if (!itemId) {
-        throw new Error('Item ID is undefined or null');
-      }
-      
       this.router.navigate(['/admin/edit', itemId]);
     } catch (error) {
       alert('Cannot edit this item. Please try again or select another item.');
@@ -134,11 +126,11 @@ export class AdminPanelComponent implements OnInit {
   refreshItems() {
     this.loadAllItems();
   }
-  
+
   hasItems(): boolean {
     return Array.isArray(this.items) && this.items.length > 0;
   }
-  
+
   handleImageError(event: any) {
     event.target.src = 'assets/placeholder-image.jpg';
   }
