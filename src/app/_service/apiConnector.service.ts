@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
   providedIn: 'root'
 })
 export class ApiConnectorService {
-  public static apiUrl = 'http://localhost:8080/api';
+  public static apiUrl = '/api';
 
   constructor(private router: Router) { }
 
