@@ -95,9 +95,9 @@ export class ApiService {
     return response.data;
   }
 
-  async removeProductFromCart(cartId: string, productId: string, quantity: number): Promise<ApiResponse<CartModel>> {
+  async removeProductFromCart(cartId: string, productId: string): Promise<ApiResponse<CartModel>> {
     const authInstance = await this.apiConnector.auth();
-    const response = await authInstance.delete('/cart/products', { params: { cartId, productId, quantity } });
+    const response = await authInstance.delete(`/cart/products/${cartId}/${productId}`);
     return response.data;
   }
 
@@ -107,9 +107,15 @@ export class ApiService {
     return response.data;
   }
 
-  async updateCart(cart: CartModel): Promise<ApiResponse<CartModel>> {
+  async incrementProductIntoCart(cartId: string, productId: string, quantity: number): Promise<ApiResponse<CartModel>> {
     const authInstance = await this.apiConnector.auth();
-    const response = await authInstance.put('/cart', cart.items);
+    const response = await authInstance.put('/cart/product/increment', { cartId, productId, quantity });
+    return response.data;
+  }
+
+  async decrementProductFromCart(cartId: string, productId: string, quantity: number): Promise<ApiResponse<CartModel>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.put('/cart/product/decrement', { cartId, productId, quantity });
     return response.data;
   }
 

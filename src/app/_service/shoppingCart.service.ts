@@ -70,7 +70,7 @@ export class ShoppingCartService{
   private mapToCartModel(response: any): CartModel {
     const cart = new CartModel();
     cart.id = response.id;
-    cart.items = response.products.map((product: any) => 
+    cart.items = response.products.map((product: any) =>
       new CartItemModel(
         new ItemModel(
           product.product.id,
@@ -208,7 +208,7 @@ export class ShoppingCartService{
         })
       );
     }
-    
+
     if (!this.cart.items) {
       this.cart.items = [];
     }
@@ -231,22 +231,49 @@ export class ShoppingCartService{
       if (!this.cart.id) {
         throw new Error('Cart ID is required');
       }
-      return from(this.apiService.addProductToCart(this.cart.id, productId, quantity)).pipe(
-        map((response: ApiResponse<CartModel>) => {
-          if (response.payload.result) {
-            this.cart = response.payload.result;
-            this.updateCartState();
-            return this.cart;
-          }
-          throw new Error('Invalid response format');
-        }),
-        catchError(error => {
-          console.error('Error updating item quantity:', error);
-          throw error;
-        })
-      );
+
+      const currentItem = this.cart.items.find(item => item.product.id === productId);
+      if (!currentItem) {
+        return from(this.apiService.addProductToCart(this.cart.id, productId, quantity)).pipe(
+          map((response: ApiResponse<CartModel>) => {
+            if (response.payload.result) {
+              this.cart = this.mapToCartModel(response.payload.result);
+              this.updateCartState();
+              return this.cart;
+            }
+            throw new Error('Invalid response format');
+          })
+        );
+      }
+
+      const currentQuantity = currentItem.quantity;
+      if (quantity > currentQuantity) {
+        return from(this.apiService.incrementProductIntoCart(this.cart.id, productId, quantity - currentQuantity)).pipe(
+          map((response: ApiResponse<CartModel>) => {
+            if (response.payload.result) {
+              this.cart = this.mapToCartModel(response.payload.result);
+              this.updateCartState();
+              return this.cart;
+            }
+            throw new Error('Invalid response format');
+          })
+        );
+      } else if (quantity < currentQuantity) {
+        return from(this.apiService.decrementProductFromCart(this.cart.id, productId, currentQuantity - quantity)).pipe(
+          map((response: ApiResponse<CartModel>) => {
+            if (response.payload.result) {
+              this.cart = this.mapToCartModel(response.payload.result);
+              this.updateCartState();
+              return this.cart;
+            }
+            throw new Error('Invalid response format');
+          })
+        );
+      }
+
+      return of(this.cart);
     } else {
-      // Handle local cart for non-authenticated users
+      // Handle local cart for non-authenticated users (unchanged)
       const existingItemIndex = this.cart.items.findIndex(
         cartItem => cartItem.product.id === productId
       );
@@ -266,15 +293,16 @@ export class ShoppingCartService{
     }
   }
 
-  public removeItem(productId: string, quantity: number = 1): Observable<CartModel> {
+  public removeItem(productId: string): Observable<CartModel> {
     if (this.authService.isLoggedIn()) {
       if (!this.cart.id) {
         throw new Error('Cart ID is required');
       }
-      return from(this.apiService.removeProductFromCart(this.cart.id, productId, quantity)).pipe(
+      return from(this.apiService.removeProductFromCart(this.cart.id, productId)).pipe(
         map((response: ApiResponse<CartModel>) => {
           if (response.payload.result) {
-            this.cart = response.payload.result;
+            // The issue is here - we need to properly map the result to CartModel
+            this.cart = this.mapToCartModel(response.payload.result);
             this.updateCartState();
             return this.cart;
           }

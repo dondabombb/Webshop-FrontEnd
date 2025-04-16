@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ItemsService } from '../../_service/items.service';
+import { ItemModel } from '../../_modals/item.model';
 
 @Component({
   selector: 'app-create-item',
@@ -29,12 +30,45 @@ export class CreateItemComponent implements OnInit {
 
   onSubmit() {
     if (this.itemForm.valid) {
-      this.itemsService.addItem(this.itemForm.value).subscribe({
-        next: () => {
+      const newItem = {
+        name: this.itemForm.value.name,
+        description: this.itemForm.value.description,
+        imageUrl: this.itemForm.value.imagePath,
+        price: Number(this.itemForm.value.price)
+      };
+
+
+      // Add Content-Type header to ensure proper JSON parsing on the server
+      this.itemsService.addItem(newItem).subscribe({
+        next: (createdItem) => {
+          console.log('Item created successfully:', createdItem);
           this.router.navigate(['/admin']);
         },
         error: (error) => {
           console.error('Error creating item:', error);
+          // Log the full error object for debugging
+          console.error('Full error object:', JSON.stringify(error));
+
+          // Display more detailed error information if available
+          if (error.error && error.error.message) {
+            alert(`Failed to create item: ${error.error.message}`);
+          } else {
+            alert('Failed to create item. Please check all fields and try again.');
+          }
+        }
+      });
+    } else {
+      // Mark all form controls as touched to trigger validation messages
+      Object.keys(this.itemForm.controls).forEach(key => {
+        const control = this.itemForm.get(key);
+        control?.markAsTouched();
+      });
+      console.log('Form is invalid. Validation errors:', this.itemForm.errors);
+      // Log individual field errors
+      Object.keys(this.itemForm.controls).forEach(key => {
+        const control = this.itemForm.get(key);
+        if (control?.errors) {
+          console.log(`Field ${key} errors:`, control.errors);
         }
       });
     }

@@ -16,18 +16,23 @@ import {PaymentComponent} from "./cart/payment/payment.component";
 import {AccountComponent} from "./account/account.component";
 
 export const routes: Routes = [
+  // Admin routes should come before the dynamic :id route
+  {path: 'admin', component: AdminPanelComponent, canActivate: [AuthGuard, AdminGuard]},
+  {path: 'admin/create', component: CreateItemComponent, canActivate: [AuthGuard, AdminGuard]},
+  {path: 'admin/edit/:id', component: EditItemComponent, canActivate: [AuthGuard, AdminGuard]},
+  
+  // Other routes
   {path: '', component: HomeScreenComponent},
   {path:'l', component: LoginScreenComponent},
   {path:'cart', component: CartComponent},
   {path: 'orders', component: OrderComponent, canActivate: [AuthGuard]},
   {path: 'orders/:id', component: OrderDetailComponent, canActivate: [AuthGuard]},
   {path: 'account', component: AccountComponent, canActivate: [AuthGuard]},
-  {path:':id', component: ItemDetailComponent},
   {path: 'cart/address', component: AddressComponent},
   {path: 'cart/payment', component: PaymentComponent},
-  {path: 'admin', component: AdminPanelComponent, canActivate: [AuthGuard, AdminGuard]},
-  {path: 'admin/create', component: CreateItemComponent, canActivate: [AuthGuard, AdminGuard]},
-  {path: 'admin/edit/:id', component: EditItemComponent, canActivate: [AuthGuard, AdminGuard]}
+  
+  // This wildcard route should come last
+  {path:':id', component: ItemDetailComponent},
 ];
 
 @NgModule({
