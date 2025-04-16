@@ -37,19 +37,11 @@ export class CreateItemComponent implements OnInit {
         price: Number(this.itemForm.value.price)
       };
 
-
-      // Add Content-Type header to ensure proper JSON parsing on the server
       this.itemsService.addItem(newItem).subscribe({
-        next: (createdItem) => {
-          console.log('Item created successfully:', createdItem);
+        next: () => {
           this.router.navigate(['/admin']);
         },
         error: (error) => {
-          console.error('Error creating item:', error);
-          // Log the full error object for debugging
-          console.error('Full error object:', JSON.stringify(error));
-
-          // Display more detailed error information if available
           if (error.error && error.error.message) {
             alert(`Failed to create item: ${error.error.message}`);
           } else {
@@ -58,18 +50,9 @@ export class CreateItemComponent implements OnInit {
         }
       });
     } else {
-      // Mark all form controls as touched to trigger validation messages
       Object.keys(this.itemForm.controls).forEach(key => {
         const control = this.itemForm.get(key);
         control?.markAsTouched();
-      });
-      console.log('Form is invalid. Validation errors:', this.itemForm.errors);
-      // Log individual field errors
-      Object.keys(this.itemForm.controls).forEach(key => {
-        const control = this.itemForm.get(key);
-        if (control?.errors) {
-          console.log(`Field ${key} errors:`, control.errors);
-        }
       });
     }
   }

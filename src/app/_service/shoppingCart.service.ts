@@ -54,14 +54,12 @@ export class ShoppingCartService{
             this.mergeWithLocalStorage();
             this.updateCartState();
           } else {
-            console.error('Failed to load cart:', response);
             this.loadFromLocalStorage();
           }
           this.isLoading.next(false);
           return this.cart;
         }),
-        catchError(error => {
-          console.error('Error loading cart:', error);
+        catchError(() => {
           this.loadFromLocalStorage();
           this.isLoading.next(false);
           return of(this.cart);
@@ -109,7 +107,6 @@ export class ShoppingCartService{
         this.cart = JSON.parse(savedCart);
         this.updateCartState();
       } catch (error) {
-        console.error('Error parsing cart from localStorage:', error);
         this.cart = new CartModel();
         this.updateCartState();
       }
@@ -136,7 +133,7 @@ export class ShoppingCartService{
           localStorage.removeItem('cart');
         }
       } catch (error) {
-        console.error('Error merging cart with localStorage:', error);
+        // Silent fail
       }
     }
   }
@@ -170,10 +167,7 @@ export class ShoppingCartService{
             }
             throw new Error('Invalid response format');
           }),
-          catchError(error => {
-            console.error('Error adding item to cart:', error);
-            return of(this.cart);
-          })
+          catchError(() => of(this.cart))
         );
       }
       return from(this.apiService.addProductToCart(this.cart.id, item.id, quantity)).pipe(
@@ -290,9 +284,7 @@ export class ShoppingCartService{
           }
           throw new Error('Invalid response format');
         }),
-        catchError(error => {
-          console.error('Error removing item:', error);
-          // Remove item locally if API call fails
+        catchError(() => {
           this.cart.items = this.cart.items.filter(item => item.product.id !== productId);
           this.updateCartState();
           return of(this.cart);
@@ -408,8 +400,7 @@ export class ShoppingCartService{
           }
           this.isLoading.next(false);
         },
-        error: (error) => {
-          console.error('Error reloading cart:', error);
+        error: () => {
           this.isLoading.next(false);
         }
       });

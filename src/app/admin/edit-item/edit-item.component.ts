@@ -40,10 +40,8 @@ export class EditItemComponent implements OnInit {
   }
 
   private loadItem(): void {
-    console.log('Loading item with ID:', this.itemId);
     this.itemsService.getOne(this.itemId).subscribe({
       next: (item: ItemModel | undefined) => {
-        console.log('Loaded item:', item);
         if (item) {
           this.itemForm.patchValue({
             name: item.name,
@@ -53,13 +51,11 @@ export class EditItemComponent implements OnInit {
           });
           this.loading = false;
         } else {
-          console.error('Item not found');
           this.error = true;
           this.loading = false;
         }
       },
-      error: (error) => {
-        console.error('Error loading item:', error);
+      error: () => {
         this.error = true;
         this.loading = false;
       }
@@ -75,20 +71,14 @@ export class EditItemComponent implements OnInit {
         imageUrl: this.itemForm.value.imagePath
       };
       
-      console.log('Submitting updated item:', updatedItem);
-      
       this.itemsService.updateItem(this.itemId, updatedItem).subscribe({
-        next: (updated) => {
-          console.log('Item updated successfully:', updated);
+        next: () => {
           this.router.navigate(['/admin']);
         },
-        error: (error) => {
-          console.error('Error updating item:', error);
+        error: () => {
           alert('Failed to update item. Please try again.');
         }
       });
-    } else {
-      console.log('Form is invalid:', this.itemForm.errors);
     }
   }
 

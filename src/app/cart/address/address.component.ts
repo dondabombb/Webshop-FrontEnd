@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../_service/user.service';
 import { AddressModel, UserModel } from '../../_modals/user.model';
+import { switchMap } from 'rxjs/internal/operators/switchMap';
 
 @Component({
   selector: 'app-address',
@@ -34,28 +35,26 @@ export class AddressComponent implements OnInit {
       return;
     }
 
-    if (this.shippingBillingSame) {
-      this.billingAddress = { ...this.shippingAddress };
+    if (!this.isAddressValid(this.shippingAddress)) {
+      this.error = 'Please fill in all shipping address fields.';
+      return;
     }
 
-    if (this.isAddressValid(this.shippingAddress) &&
-        (this.shippingBillingSame || this.isAddressValid(this.billingAddress))) {
-      this.userService.updateShippingAddress(this.user.id, this.shippingAddress).subscribe({
-        next: () => {
-          if (!this.shippingBillingSame) {
-            this.userService.updateBillingAddress(this.user?.id, this.billingAddress).subscribe({
-              next: () => this.navigateToPayment(),
-              error: this.handleError
-            });
-          } else {
-            this.navigateToPayment();
-          }
-        },
-        error: this.handleError
-      });
-    } else {
-      this.error = 'Please fill in all required fields.';
+    // Copy shipping address to billing if they're the same
+    if (this.shippingBillingSame) {
+      this.billingAddress = { ...this.shippingAddress };
+    } else if (!this.isAddressValid(this.billingAddress)) {
+      this.error = 'Please fill in all billing address fields.';
+      return;
     }
+
+    // Update shipping address first, then billing address
+    this.userService.updateShippingAddress(this.user.id, this.shippingAddress).pipe(
+      switchMap(() => this.userService.updateBillingAddress(this.user!.id, this.billingAddress))
+    ).subscribe({
+      next: () => this.navigateToPayment(),
+      error: this.handleError
+    });
   }
 
   private isAddressValid(address: AddressModel): boolean {
@@ -71,6 +70,5 @@ export class AddressComponent implements OnInit {
 
   private handleError = (error: any) => {
     this.error = 'Failed to update address. Please try again.';
-    console.error('Error updating address:', error);
   }
 }

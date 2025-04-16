@@ -51,11 +51,9 @@ export class OrderService {
   getUserOrders(): Observable<OrderModel[]> {
     return from(this.apiService.getUserOrders()).pipe(
       map((response: ApiResponse<OrderModel[]>) => {
-        console.log('API Response:', response); // Debug log
         if (response && response.payload && Array.isArray(response.payload.result)) {
           return response.payload.result;
         }
-        console.warn('Invalid response format:', response);
         return [];
       })
     );

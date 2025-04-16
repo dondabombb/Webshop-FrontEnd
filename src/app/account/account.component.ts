@@ -19,11 +19,11 @@ import {AddressModel, UserModel} from "../_modals/user.model";
 export class AccountComponent implements OnInit {
   accountForm: FormGroup;
   shippingAddressForm: FormGroup;
-  billingAddressForm: FormGroup;
   isLoading = true;
   error: string | null = null;
   success: string | null = null;
   user: UserModel | null = null;
+  initialAccountValues: any; // Add this property declaration
 
   constructor(
     private fb: FormBuilder,
@@ -34,24 +34,18 @@ export class AccountComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      phoneNumber: ['', Validators.required]
+      phoneNumber: [''],
+      shippingAddress: this.fb.group({
+        street: ['', Validators.required],
+        houseNumber: ['', Validators.required],
+        postalCode: ['', Validators.required],
+        city: ['', Validators.required],
+        country: ['', Validators.required]
+      })
     });
 
-    this.shippingAddressForm = this.fb.group({
-      street: ['', Validators.required],
-      houseNumber: ['', Validators.required],
-      postalCode: ['', Validators.required],
-      city: ['', Validators.required],
-      country: ['', Validators.required]
-    });
-
-    this.billingAddressForm = this.fb.group({
-      street: ['', Validators.required],
-      houseNumber: ['', Validators.required],
-      postalCode: ['', Validators.required],
-      city: ['', Validators.required],
-      country: ['', Validators.required]
-    });
+    // Remove separate forms since they're now part of accountForm
+    this.shippingAddressForm = this.accountForm.get('shippingAddress') as FormGroup;
   }
 
   ngOnInit(): void {
@@ -75,16 +69,12 @@ export class AccountComponent implements OnInit {
             this.shippingAddressForm.patchValue(user.shippingAddress);
           }
 
-          if (user.billingAddress) {
-            this.billingAddressForm.patchValue(user.billingAddress);
-          }
-
+          this.initialAccountValues = this.accountForm.value;
           this.isLoading = false;
         },
-        error: (error: any) => {
+        error: () => {
           this.error = 'Failed to load user data. Please try again.';
           this.isLoading = false;
-          console.error('Error loading user data:', error);
         }
       });
     }
@@ -92,14 +82,20 @@ export class AccountComponent implements OnInit {
 
   updateAccount(): void {
     if (this.accountForm.valid && this.user?.id) {
-      this.userService.updateUser(this.user.id, this.accountForm.value).subscribe({
+      const userData = {
+        email: this.accountForm.value.email,
+        firstName: this.accountForm.value.firstName,
+        lastName: this.accountForm.value.lastName,
+        phoneNumber: this.accountForm.value.phoneNumber
+      };
+
+      this.userService.updateUser(this.user.id, userData).subscribe({
         next: () => {
           this.success = 'Account information updated successfully.';
           setTimeout(() => this.success = null, 3000);
         },
-        error: (error: any) => {
-          this.error = 'Failed to update accounts information. Please try again.';
-          console.error('Error updating accounts:', error);
+        error: () => {
+          this.error = 'Failed to update account information. Please try again.';
         }
       });
     }
@@ -113,25 +109,8 @@ export class AccountComponent implements OnInit {
           this.success = 'Shipping address updated successfully.';
           setTimeout(() => this.success = null, 3000);
         },
-        error: (error: any) => {
+        error: () => {
           this.error = 'Failed to update shipping address. Please try again.';
-          console.error('Error updating shipping address:', error);
-        }
-      });
-    }
-  }
-
-  updateBillingAddress(): void {
-    if (this.billingAddressForm.valid && this.user?.id) {
-      const address: AddressModel = this.billingAddressForm.value;
-      this.userService.updateBillingAddress(this.user.id, address).subscribe({
-        next: () => {
-          this.success = 'Billing address updated successfully.';
-          setTimeout(() => this.success = null, 3000);
-        },
-        error: (error: any) => {
-          this.error = 'Failed to update billing address. Please try again.';
-          console.error('Error updating billing address:', error);
         }
       });
     }
