@@ -38,4 +38,39 @@
       </section>
     </section>
   </section>
+
+  <div class="mt-12">
+    <h2 class="text-2xl font-bold mb-4">Payment Methods Management</h2>
+    <div class="flex justify-between mb-6 text-white">
+      <app-button styles="main" (onClick)="navigateToCreatePayment()" class="py-2 px-4">
+        Add New Payment Method
+      </app-button>
+      <app-button styles="secondary" (onClick)="refreshPayments()" class="py-2 px-4">
+        Refresh Payment Methods
+      </app-button>
+    </div>
+
+    <div *ngIf="paymentLoading" class="text-center py-12">
+      <p class="text-lg">Loading payment methods...</p>
+    </div>
+
+    <div *ngIf="!paymentLoading && !hasPaymentMethods()" class="text-center py-12 bg-gray-50 rounded-lg shadow-sm">
+      <p class="text-lg">No payment methods found. Add your first payment method!</p>
+    </div>
+
+    <div *ngIf="!paymentLoading && paymentMethods.length > 0" class="grid gap-4">
+      <div *ngFor="let payment of paymentMethods" 
+           class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
+        <span class="text-lg font-medium">{{payment.paymentOption}}</span>
+        <div class="flex gap-2">
+          <app-button styles="secondary" (onClick)="navigateToEditPayment(payment)" class="py-2 px-3 text-white">
+            Edit
+          </app-button>
+          <app-button styles="danger" (onClick)="removePaymentMethod(payment)" class="py-2 px-3">
+            Remove
+          </app-button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

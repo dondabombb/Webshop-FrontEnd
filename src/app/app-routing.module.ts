@@ -14,12 +14,16 @@ import { EditItemComponent } from './admin/edit-item/edit-item.component';
 import {AddressComponent} from "./cart/address/address.component";
 import {PaymentComponent} from "./cart/payment/payment.component";
 import {AccountComponent} from "./account/account.component";
+import { EditPaymentComponent } from './admin/edit-payment/edit-payment.component';
+import { CreatePaymentComponent } from './admin/create-payment/create-payment.component';
 
 export const routes: Routes = [
   // Admin routes should come before the dynamic :id route
   {path: 'admin', component: AdminPanelComponent, canActivate: [AuthGuard, AdminGuard]},
   {path: 'admin/create', component: CreateItemComponent, canActivate: [AuthGuard, AdminGuard]},
   {path: 'admin/edit/:id', component: EditItemComponent, canActivate: [AuthGuard, AdminGuard]},
+  {path: 'admin/payments/create', component: CreatePaymentComponent, canActivate: [AuthGuard, AdminGuard]},
+  {path: 'admin/payments/edit/:id', component: EditPaymentComponent, canActivate: [AuthGuard, AdminGuard]},
   
   // Other routes
   {path: '', component: HomeScreenComponent},

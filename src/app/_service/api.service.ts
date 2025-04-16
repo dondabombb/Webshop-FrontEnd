@@ -30,6 +30,12 @@ interface PaymentResponse {
   paymentOption: string;
 }
 
+interface UpdateUser{
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -157,7 +163,7 @@ export class ApiService {
     return response.data;
   }
 
-  async updateUser(id: string, user: Partial<UserModel>): Promise<ApiResponse<UserModel>> {
+  async updateUser(id: string, user: UpdateUser): Promise<ApiResponse<UserModel>> {
     const authInstance = await this.apiConnector.auth();
     const response = await authInstance.put(`/user/${id}`, user);
     return response.data;
@@ -184,6 +190,30 @@ export class ApiService {
   async getPaymentMethods(): Promise<ApiResponse<PaymentResponse[]>> {
     const authInstance = await this.apiConnector.auth();
     const response = await authInstance.get('/payment-methods');
+    return response.data;
+  }
+
+  async createPaymentMethod(payment: string): Promise<ApiResponse<PaymentResponse>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.post('/payment-methods', payment);
+    return response.data;
+  }
+
+  async getPaymentMethodById(id: string): Promise<ApiResponse<PaymentResponse>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.get(`/payment-methods/${id}`);
+    return response.data;
+  }
+
+  async updatePaymentMethod(id: string, payment: string): Promise<ApiResponse<PaymentResponse>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.put(`/payment-methods/${id}`, {payment} );
+    return response.data;
+  }
+
+  async deletePaymentMethod(id: string): Promise<ApiResponse<void>> {
+    const authInstance = await this.apiConnector.auth();
+    const response = await authInstance.delete(`/payment-methods/${id}`);
     return response.data;
   }
 }

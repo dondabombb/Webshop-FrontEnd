@@ -14,6 +14,12 @@ interface ApiResponse<T> {
   };
 }
 
+interface UpdateUser{
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,7 +37,7 @@ export class UserService {
     );
   }
 
-  updateUser(id: string, userData: Partial<UserModel>): Observable<UserModel> {
+  updateUser(id: string, userData: UpdateUser): Observable<UserModel> {
     return from(this.apiService.updateUser(id, userData)).pipe(
       map((response: ApiResponse<UserModel>) => {
         if (response.payload.result) {

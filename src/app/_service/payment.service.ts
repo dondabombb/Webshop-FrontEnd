@@ -33,4 +33,48 @@ export class PaymentService {
       })
     );
   }
+
+  createPaymentMethod(payment: string): Observable<PaymentResponse> {
+    return from(this.apiService.createPaymentMethod(payment)).pipe(
+      map(response => {
+        if (response.payload.result) {
+          return response.payload.result;
+        }
+        throw new Error('Failed to create payment method');
+      })
+    );
+  }
+
+  getPaymentMethodById(id: string): Observable<PaymentResponse> {
+    return from(this.apiService.getPaymentMethodById(id)).pipe(
+      map(response => {
+        if (response.payload.result) {
+          return response.payload.result;
+        }
+        throw new Error('Payment method not found');
+      })
+    );
+  }
+
+  updatePaymentMethod(id: string, payment: string): Observable<PaymentResponse> {
+    return from(this.apiService.updatePaymentMethod(id, payment)).pipe(
+      map(response => {
+        if (response.payload.result) {
+          return response.payload.result;
+        }
+        throw new Error('Failed to update payment method');
+      })
+    );
+  }
+
+  deletePaymentMethod(id: string): Observable<void> {
+    return from(this.apiService.deletePaymentMethod(id)).pipe(
+      map(response => {
+        if (!response.success) {
+          throw new Error('Failed to delete payment method');
+        }
+      })
+    );
+  }
+
 }

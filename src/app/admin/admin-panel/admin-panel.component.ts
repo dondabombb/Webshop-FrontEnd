@@ -2,6 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { ItemModel } from "../../_modals/item.model";
 import { ItemsService } from "../../_service/items.service";
+import { PaymentService } from '../../_service/payment.service';
+
+interface PaymentMethod {
+  id: string;
+  paymentOption: string;
+}
 
 @Component({
   selector: 'app-admin-panel',
@@ -10,14 +16,64 @@ import { ItemsService } from "../../_service/items.service";
 })
 export class AdminPanelComponent implements OnInit {
   public items: ItemModel[] = [];
+  public paymentMethods: PaymentMethod[] = [];
   loading = true;
+  paymentLoading = true;
   error = false;
   productNotFound = false;
 
-  constructor(private router: Router, private itemService: ItemsService) { }
+  constructor(
+    private router: Router, 
+    private itemService: ItemsService,
+    private paymentService: PaymentService,
+  ) { }
 
   ngOnInit() {
     this.loadAllItems();
+    this.loadPaymentMethods();
+  }
+
+  private loadPaymentMethods() {
+    this.paymentLoading = true;
+    this.paymentService.getPaymentMethods().subscribe({
+      next: (methods) => {
+        this.paymentMethods = methods;
+        this.paymentLoading = false;
+      },
+      error: () => {
+        alert('Failed to load payment methods');
+        this.paymentLoading = false;
+      }
+    });
+  }
+
+  navigateToCreatePayment() {
+    this.router.navigate(['/admin/payments/create']);
+  }
+
+  navigateToEditPayment(payment: PaymentMethod) {
+    this.router.navigate(['/admin/payments/edit', payment.id]);
+  }
+
+  removePaymentMethod(payment: PaymentMethod) {
+    if (confirm(`Are you sure you want to remove ${payment.paymentOption}?`)) {
+      this.paymentService.deletePaymentMethod(payment.id).subscribe({
+        next: () => {
+          this.paymentMethods = this.paymentMethods.filter(p => p.id !== payment.id);
+        },
+        error: () => {
+          alert('Failed to remove payment method. Please try again.');
+        }
+      });
+    }
+  }
+
+  refreshPayments() {
+    this.loadPaymentMethods();
+  }
+
+  hasPaymentMethods(): boolean {
+    return this.paymentMethods.length > 0;
   }
   
   dismissError() {

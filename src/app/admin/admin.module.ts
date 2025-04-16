@@ -5,6 +5,8 @@ import {AdminPanelComponent} from "./admin-panel/admin-panel.component";
 import {EditItemComponent} from "./edit-item/edit-item.component";
 import {CreateItemComponent} from "./create-item/create-item.component";
 import {ReactiveFormsModule} from "@angular/forms";
+import { EditPaymentComponent } from './edit-payment/edit-payment.component';
+import { CreatePaymentComponent } from './create-payment/create-payment.component';
 
 
 
@@ -15,7 +17,9 @@ import {ReactiveFormsModule} from "@angular/forms";
   declarations: [
     AdminPanelComponent,
     EditItemComponent,
-    CreateItemComponent
+    CreateItemComponent,
+    EditPaymentComponent,
+    CreatePaymentComponent
   ],
     imports: [
         CommonModule,

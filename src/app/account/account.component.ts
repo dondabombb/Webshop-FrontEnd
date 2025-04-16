@@ -5,6 +5,11 @@ import {AuthService} from "../_service/auth.service";
 import { UserService } from '../_service/user.service';
 import {AddressModel, UserModel} from "../_modals/user.model";
 
+interface UpdateUser{
+  firstName: string;
+  lastName: string;
+  email: string;
+}
 @Component({
   selector: 'app-account',
   standalone: true,
@@ -82,11 +87,10 @@ export class AccountComponent implements OnInit {
 
   updateAccount(): void {
     if (this.accountForm.valid && this.user?.id) {
-      const userData = {
+      const userData: UpdateUser = {
         email: this.accountForm.value.email,
         firstName: this.accountForm.value.firstName,
         lastName: this.accountForm.value.lastName,
-        phoneNumber: this.accountForm.value.phoneNumber
       };
 
       this.userService.updateUser(this.user.id, userData).subscribe({
